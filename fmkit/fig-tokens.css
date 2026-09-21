@@ -1,0 +1,61 @@
+/* Generated from Figma Variables. First mode = :root default.
+   FLOAT tokens are unitless — multiply by 1px in calc() where a length is needed. */
+
+:root {
+  --alerts-error: rgb(236,46,26); /* @kind color */
+  --alerts-success: rgb(117,206,80); /* @kind color */
+  --alerts-warning: rgb(247,144,9); /* @kind color */
+  --backgrounds-dark-primary: rgb(9,15,29); /* @kind color */
+  --backgrounds-dark-secondary: rgb(27,29,50); /* @kind color */
+  --backgrounds-dark-tertiary: rgb(31,34,49); /* @kind color */
+  --backgrounds-light-primary: rgb(255,255,255); /* @kind color */
+  --backgrounds-light-secondary: rgb(247,247,247); /* @kind color */
+  --font-family-body: "poppins";
+  --font-family-heading: "ABCSans";
+  --font-line-hight-2xl: 56;
+  --font-line-hight-lg: 40;
+  --font-line-hight-md: 32;
+  --font-line-hight-sm: 24;
+  --font-line-hight-xl: 48;
+  --font-line-hight-xs: 16;
+  --font-size-2xl: 32;
+  --font-size-2xs: 12;
+  --font-size-3xl: 40;
+  --font-size-3xs: 10;
+  --font-size-4xl: 48;
+  --font-size-lg: 20;
+  --font-size-md: 18;
+  --font-size-sm: 16;
+  --font-size-xl: 24;
+  --font-size-xs: 14;
+  --font-weight-bold: "Bold";
+  --font-weight-medium: "Medium";
+  --font-weight-regular: "Regular";
+  --font-weight-semibold: "SemiBold";
+  --grayscale-900: rgb(26,26,26); /* @kind color */
+  --label-colour-primary: rgb(209,107,244); /* @kind color */
+  --label-colour-secondary: rgb(193,212,57); /* @kind color */
+  --label-colour-tertiary: rgb(149,210,115); /* @kind color */
+  --label-dark-primary: rgb(250,250,255); /* @kind color */
+  --label-dark-secondary: rgba(250,250,255,0.6); /* @kind color */
+  --label-dark-tertiary: rgba(250,250,255,0.3); /* @kind color */
+  --main-primary: rgb(104,33,220); /* @kind color */
+  --main-secondary: rgb(236,66,102); /* @kind color */
+  --main-tertiary: rgb(198,115,229); /* @kind color */
+  --neutrals-100: rgb(245,245,245); /* @kind color */
+  --neutrals-200: rgb(229,229,229); /* @kind color */
+  --neutrals-300: rgb(212,212,212); /* @kind color */
+  --neutrals-400: rgb(163,163,163); /* @kind color */
+  --neutrals-500: rgb(115,115,115); /* @kind color */
+  --neutrals-50: rgb(250,250,250); /* @kind color */
+  --neutrals-600: rgb(82,82,82); /* @kind color */
+  --neutrals-700: rgb(64,64,64); /* @kind color */
+  --neutrals-800: rgb(38,38,38); /* @kind color */
+  --neutrals-900: rgb(26,26,26); /* @kind color */
+  --neutrals-shade-2: rgb(18,21,38); /* @kind color */
+  --neutrals-shade: rgb(41,43,64); /* @kind color */
+}
+
+:root[data-theme="dark"], .dark {
+  --grayscale-900: rgb(255,255,255); /* @kind color */
+}
