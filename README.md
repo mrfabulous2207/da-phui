@@ -1,8 +1,41 @@
-# Da Phui FM
+# Đá Phủi App
 
-Vietnamese amateur-football (đá phủi) team manager, implemented from
-the Claude Design canvas file `Da Phui FM.dc.html`
-(project `ee67589a-7b9a-4bb8-8ef2-dc0b657e54b6`).
+**Mở app: https://mrfabulous2207.github.io/da-phui/**
+
+Quản lý đội bóng phủi: điểm danh, đội hình, chiến thuật, quỹ đội. Không cài gì,
+mở bằng trình duyệt trên điện thoại hay máy tính đều được.
+
+## Cho đồng đội
+
+1. Mở đường dẫn trên.
+2. Bấm **"Vào đội bằng mã"**, nhập số điện thoại của bạn và đặt mật khẩu — mật
+   khẩu là của riêng máy bạn, không ai khác biết.
+3. Nhập **mã đội 5 ký tự** đội trưởng gửi.
+4. Xong. Bấm "Tôi đi" / "Chưa chắc" / "Không đi" cho buổi tới; đội trưởng thấy
+   ngay trên máy của họ.
+
+Chưa có mã thì bấm **"Xem thử bằng đội mẫu"** — đó là một đội bịa (FC Mẫu, 14
+người không có thật) để nghịch thử, xoá đi lúc nào cũng được.
+
+## Cho đội trưởng
+
+Bấm **"Tạo đội mới"**. App đưa lại hai mã: **mã 5 ký tự** để nhắn cho cả đội
+(chỉ xem được), và một **chìa sửa 16 ký tự** chỉ nằm trên máy bạn — máy nào
+không có chìa đó thì không sửa được đội hình hay quỹ. Mất máy là mất chìa, nên
+đội hiện chỉ sửa được từ đúng máy đã tạo ra nó.
+
+## Vài điều nói thẳng
+
+- **Máy chủ dùng gói miễn phí và TỰ TẠM DỪNG** nếu cả đội không mở app một thời
+  gian. Lúc đó app báo "máy chưa nối được tới máy chủ" và chỉ xem được bản lưu
+  trên máy. Chủ dự án vào bảng điều khiển Supabase bấm khôi phục là chạy lại,
+  dữ liệu còn nguyên.
+- Dữ liệu của đội nằm trên máy chủ và trong bộ nhớ trình duyệt của từng người.
+  Chưa có nút xuất toàn bộ ra một tệp.
+- Hoá đơn, thông báo đẩy, nhắc nợ tự động: **chưa có**. Nút "Nhắc" chép sẵn câu
+  nhắn để bạn dán vào Zalo.
+
+---
 
 Static app — no build, no server needed beyond a plain file server. Data lives in
 `localStorage` under the key `dpfm-v3`.
