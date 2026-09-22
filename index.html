@@ -2127,6 +2127,10 @@
                 <!-- Cau nay thay cho bay chu "theo Cach da" lap o tung chi dao. -->
                 <div style="font-size:13px; line-height:1.5; color:rgba(250,250,255,0.42); margin-bottom:8px">Ô sáng đậm là bạn tự đặt; ô sáng nhạt là đang theo Cách đá. Bấm ↺ để trả về theo Cách đá.</div>
 
+                <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.07)">
+                  <span style="flex:1; min-width:0; font-size:13px; color:rgba(250,250,255,0.66); line-height:1.5">{{ insSummary }}</span>
+                  <span onClick="{{ insToggle }}" role="button" tabindex="0" style="cursor:pointer; flex-shrink:0; display:flex; align-items:center; min-height:36px; padding:0 13px; border-radius:8px; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14); font-size:13px; font-weight:700; white-space:nowrap; color:rgba(250,250,255,0.8)">{{ insToggleLabel }}</span>
+                </div>
                 <sc-for list="{{ tacticPhases }}" as="tp" hint-placeholder-count="3">
                   <div style="margin-top:12px; padding-top:10px; border-top:1px solid rgba(255,255,255,0.07)">
                     <div style="font-size:13px; font-weight:700; letter-spacing:0.1em; color:rgba(250,250,255,0.5)">{{ tp.label }}</div>

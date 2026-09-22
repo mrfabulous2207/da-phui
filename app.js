@@ -2797,7 +2797,7 @@ class Component extends DCLogic {
     members: [],
     ledger: [],
     slotsByTeam: {}, picked: null, kitByTeam: {},
-    attendByOcc: {}, paidByOcc: {}, teamNameDraft: null, occ: "", menu: null, wide3: true, wide6: false, lineupView: "squad", teamView: "fund", matchKindByOcc: {}, slotOvr: {}, teamTab: "A", paneTab: "pitch", shapeTab: "shape", narrow: false, wide4: false, pickedSlot: null, demoOn: false, demoPhase: 0, drawMode: false, drawFrom: null, poolOpen: { yes: true, none: false, no: false }, tacticLib: {}, tacticSel: {}, tacticSlot: null, sizeAsk: null, ctx: null, tacticsByTeam: {}, closedOcc: {}, undo: null, memberView: "list", splitOpen: false, charges: [], splitByOcc: {}, benchByTeam: {}, slotsByOcc: {}, hiddenCols: {}, formation: "1-2-3-1", formOpen: false, settledAt: {}, settledTick: 0, waivedByOcc: {}, lateOffByOcc: {}, barOpen: false, nameMode: "both", tacPhase: "on", autoWhy: [], authMode: "login", pass2: "", notesOff: {}, door: "", netErr: "", dobInput: "", invite: "", pw: {}, pwh: {}, arrows: [], subs: [], foesOn: false, steps: [], stepI: 0, stepMode: false, playMs: null, sit: "", takerByPlan: {}, akShow: false,
+    attendByOcc: {}, paidByOcc: {}, teamNameDraft: null, occ: "", menu: null, wide3: true, wide6: false, lineupView: "squad", teamView: "fund", matchKindByOcc: {}, slotOvr: {}, teamTab: "A", paneTab: "pitch", shapeTab: "shape", narrow: false, wide4: false, pickedSlot: null, demoOn: false, demoPhase: 0, drawMode: false, drawFrom: null, poolOpen: { yes: true, none: false, no: false }, tacticLib: {}, tacticSel: {}, tacticSlot: null, sizeAsk: null, ctx: null, tacticsByTeam: {}, closedOcc: {}, undo: null, memberView: "list", splitOpen: false, charges: [], splitByOcc: {}, benchByTeam: {}, slotsByOcc: {}, hiddenCols: {}, formation: "1-2-3-1", formOpen: false, settledAt: {}, settledTick: 0, waivedByOcc: {}, lateOffByOcc: {}, barOpen: false, nameMode: "both", tacPhase: "on", autoWhy: [], authMode: "login", pass2: "", notesOff: {}, door: "", netErr: "", dobInput: "", invite: "", pw: {}, pwh: {}, arrows: [], subs: [], foesOn: false, steps: [], stepI: 0, stepMode: false, playMs: null, sit: "", takerByPlan: {}, insAll: false, akShow: false,
     teams: [], pending: null, joinCode: "", newTeam: "", nameInput: "", promoteId: "", evEditId: null, copied: "", lineupMsg: "", filter: "", q: "", sel: null, split: null, quickKey: "",
     // rankBy rong = chua ai chon cot; luc do `defaultRankBy` quyet dinh theo
     // du lieu that. De san "rating" o day thi ham do khong bao gio chay.
@@ -8504,9 +8504,33 @@ class Component extends DCLogic {
          rong cot cao 922px ma chi co 608px chu -- 350px trong, trong khi ba chi
          dao khi mat bong (Dang cao · Ap sat · Cach kem) bi giau sau mot cu bam.
          Man rong hien ca ba pha, dung nhu FM bay ca ba khoi cung luc. */
-      tacticPhases: INS_PHASES.filter(ph => !st.narrow || ph.key === "trans" || ph.key === tacPhase).map(ph => ({
+      /* MOT MAN CHIEN THUAT CHAT KIN KHONG PHAI LA MAN CHIEN THUAT SAU.
+         Do duoc o 1440x900: cot chi dao cao 742 ma noi dung 1223 -- cuon 1,6
+         lan, mua muoi hai num bay phang khong thu bac.
+
+         Nhung "Cach da" VON DA dat ca muoi hai num. Nen mac dinh chi hien num
+         doi truong TU DAT (`own`), con lai gop thanh mot dong. Khong num nao bi
+         bo -- "Mo het" la mot cu bam. Do dung la cai FM lam: chon lo lon truoc,
+         vach ra sau.
+
+         Pha khong con num nao thi an luon tieu de, khong de lai cai dau rong. */
+      insAllOn: !!st.insAll,
+      insToggle: guard(() => this.setState(s2 => ({ insAll: !s2.insAll }))),
+      insToggleLabel: st.insAll ? "Thu gọn" : "Mở hết 12 núm",
+      insSummary: (() => {
+        const own = INS_ROWS.filter(r => !!((actTactic && actTactic.ins) || {})[r.key]).length;
+        const theo = INS_ROWS.length - own;
+        if (st.insAll) return own ? (own + "/" + INS_ROWS.length + " núm bạn tự đặt.") : ("Tất cả " + INS_ROWS.length + " núm đang theo Cách đá.");
+        return own
+          ? (own + " núm bạn tự đặt · " + theo + " núm còn lại theo Cách đá.")
+          : ("Cả " + INS_ROWS.length + " núm đang theo Cách đá — đủ dùng cho phần lớn trận.");
+      })(),
+      tacticPhases: INS_PHASES.filter(ph => !st.narrow || ph.key === "trans" || ph.key === tacPhase)
+        .map(ph => ({ ph: ph, rows: ph.rows.filter(r => st.insAll || !!((actTactic && actTactic.ins) || {})[r.key]) }))
+        .filter(x => x.rows.length > 0)
+        .map(({ ph, rows }) => ({
         label: ph.label,
-        rows: ph.rows.map(row => {
+        rows: rows.map(row => {
           const cur = insOf(actTactic, row.key);
           const own = !!((actTactic && actTactic.ins) || {})[row.key];
           const o = row.opts.find(x => x[0] === cur);
