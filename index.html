@@ -71,18 +71,62 @@
      Bon o TRAN/BAN/K.TAO/HAY NHAT va chip no quy VAN GIU: the FIFA khong co
      cho cho chung, nhung doi truong phui mo man nay chinh la de xem chung. */
   .pc-grid[data-tall="1"] { grid-template-columns:repeat(auto-fill, minmax(min(212px,100%), 1fr)); }
-  .pcard[data-tall="1"] { padding:12px 13px 11px; gap:9px; }
-  .pcard[data-tall="1"] .pc-top { flex-direction:row; align-items:flex-start; gap:8px; min-height:150px; }
+  /* Hinh khien lay THANG tu file Figma (node 404:122, 480x765) dung lam
+     mat na, con mau van la mau cua app. Ty le 480/765 = 0,627 -- dung ty le the
+     that. CO Y khong lay bo mat vang cua FIFA: kho nay cong khai va do la nhan
+     dien co dang ky cua ho.
+     Mat na an het bo goc va bong do, nen padding phai chua cai khia o goc tren
+     phai: 26px ben phai thay vi 13px. */
+  .pcard[data-tall="1"] { aspect-ratio:480/765; padding:21% 6% 24% !important; gap:7px !important;
+    -webkit-mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 765"><path fill="%23fff" d="M417.79 39.8052C417.546 37.2669 417.424 35.9977 416.791 35.1547C416.158 34.3118 415.085 33.8842 412.938 33.029C359.446 11.718 301.091 0 240 0C178.909 0 120.554 11.718 67.0615 33.029C64.9149 33.8842 63.8415 34.3118 63.209 35.1548C62.5765 35.9977 62.4545 37.2669 62.2104 39.8053C59.4027 69.0106 36.4955 92.3434 7.4865 95.8062C3.7563 96.2515 1.8912 96.4742 0.945599 97.5393C0 98.6045 0 100.32 0 103.75V596.081C0 629.015 0 645.482 8.77091 657.387C17.5418 669.291 33.7294 674.314 66.1046 684.36C135.735 705.964 235.937 741.029 240 765C244.063 741.029 344.265 705.964 413.895 684.36C446.271 674.314 462.458 669.291 471.229 657.387C480 645.482 480 629.015 480 596.081V103.75C480 100.32 480 98.6045 479.054 97.5393C478.109 96.4742 476.244 96.2515 472.514 95.8062C443.504 92.3434 420.597 69.0106 417.79 39.8052Z"/><path fill="%23fff" transform="translate(0,405)" d="M0 0V191.081C0 224.015 0 240.482 8.77106 252.387C17.5418 264.291 33.7292 269.314 66.1044 279.36C135.735 300.964 235.937 336.029 240 360C244.063 336.029 344.265 300.964 413.896 279.36C446.271 269.314 462.458 264.291 471.229 252.387C480 240.482 480 224.015 480 191.081V0H0Z"/></svg>'); mask-image:url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 765"><path fill="%23fff" d="M417.79 39.8052C417.546 37.2669 417.424 35.9977 416.791 35.1547C416.158 34.3118 415.085 33.8842 412.938 33.029C359.446 11.718 301.091 0 240 0C178.909 0 120.554 11.718 67.0615 33.029C64.9149 33.8842 63.8415 34.3118 63.209 35.1548C62.5765 35.9977 62.4545 37.2669 62.2104 39.8053C59.4027 69.0106 36.4955 92.3434 7.4865 95.8062C3.7563 96.2515 1.8912 96.4742 0.945599 97.5393C0 98.6045 0 100.32 0 103.75V596.081C0 629.015 0 645.482 8.77091 657.387C17.5418 669.291 33.7294 674.314 66.1046 684.36C135.735 705.964 235.937 741.029 240 765C244.063 741.029 344.265 705.964 413.895 684.36C446.271 674.314 462.458 669.291 471.229 657.387C480 645.482 480 629.015 480 596.081V103.75C480 100.32 480 98.6045 479.054 97.5393C478.109 96.4742 476.244 96.2515 472.514 95.8062C443.504 92.3434 420.597 69.0106 417.79 39.8052Z"/><path fill="%23fff" transform="translate(0,405)" d="M0 0V191.081C0 224.015 0 240.482 8.77106 252.387C17.5418 264.291 33.7292 269.314 66.1044 279.36C135.735 300.964 235.937 336.029 240 360C244.063 336.029 344.265 300.964 413.896 279.36C446.271 269.314 462.458 264.291 471.229 252.387C480 240.482 480 224.015 480 191.081V0H0Z"/></svg>');
+    -webkit-mask-size:100% 100%; mask-size:100% 100%;
+    -webkit-mask-repeat:no-repeat; mask-repeat:no-repeat; border-radius:0; }
+  .pcard[data-tall="1"]::after { display:none; }
+  /* Do bang Path2D tren chinh hinh khien: bon o dem, chan the va chip hang deu
+     nam NGOAI hinh (0000) -- khien thop lai o day con noi dung bay theo hinh chu
+     nhat. Nen the doc la THE KHOE dung nghia: diem, vi tri, so ao, anh, ten, sau
+     chi so. Phan quan ly (tran/ban/kien tao/hay nhat, hang, diem danh, no quy)
+     o lai the gon -- van day du, chi khong nam tren cai the mang di khoe. */
+  .pcard[data-tall="1"] .pc-stats,
+  .pcard[data-tall="1"] .pc-foot,
+  .pcard[data-tall="1"] .pc-grade { display:none; }
+  /* Dinh khien hep hon than, nen le trai phai an vao trong o hai dau. */
+  /* Do duoc tren chinh hinh khien (toa do SVG 480 rong): y=10 chi rong 144..336,
+     tren the cao 353px: khien DU RONG tu y=46px den y=295px, con tren/duoi do
+     thi thop (y=37px chi rong 43..437, y=314px chi 53..427).
+     Le tinh theo % cua BE NGANG (CSS padding % luon lay be ngang, ke ca
+     padding-top -- da dinh dung bay nay: 13% ra 29px chu khong phai 46px).
+     The cao = rong / 0,627 = 1,594 x rong, nen 46px = 21% va 53px = 24%.
+     `!important` vi the co style NOI TUYEN `padding:14px 15px 12px` trong
+     template, ma noi tuyen thang stylesheet -- khong co no thi luat nay im lang
+     khong an, da dinh dung vay. */
+  /* ANH la thu co gian, khong phai chi so: chi so bi day ra ngoai khien thi the
+     hong, con anh nho di mot chut thi khong ai thay. */
+  /* `flex:1 1 auto` thi hang tren KHONG chiu co: anh tu quyet chieu cao, tong
+     cac con thanh 293px trong khi hop noi dung chi 254px, va chi so bi day ra
+     ngoai khien 39px. `flex:1 1 0` moi lam chieu cao no XAC DINH -- do la phan
+     con lai, va anh vua vao do. */
+  .pcard[data-tall="1"] .pc-top { padding-left:2px; flex:1 1 0; min-height:0; }
+  .pcard[data-tall="1"] .pc-name,
+  .pcard[data-tall="1"] .pc-faces { flex:0 0 auto; }
+  .pcard[data-tall="1"] .pc-faces { margin:0; }
+  .pcard[data-tall="1"] .pc-name { margin:0; }
+  .pcard[data-tall="1"] .pc-top { flex-direction:row; align-items:flex-start; gap:8px; }
   .pcard[data-tall="1"] .pc-idcol { min-width:44px; justify-content:flex-start; gap:3px; }
   .pcard[data-tall="1"] .pc-rate { font-size:44px; }
   .pcard[data-tall="1"] .pc-crest { display:block; width:30px; height:30px; margin-top:7px; object-fit:contain; opacity:0.92; }
   /* Anh chiem cho — day la khoang cach lon nhat so voi the that: truoc no chi 56px. */
   /* Anh o the that rong hon cao (FIFA de 480x405). De vuong thi the cao vong
      len ty le 0,58 va day sau chi so xuong duoi tam nhin. */
-  .pcard[data-tall="1"] .pc-photo { margin:0; width:100%; height:auto; aspect-ratio:4/3; min-height:0; border-radius:10px; }
+  /* `width:100%` trong hop flex = 100% CUA HOP, cong them cot diem ben trai thi
+     anh tran ra ngoai the 41px -- do duoc dung vay. Phai de no co gian. */
+  .pcard[data-tall="1"] .pc-photo { margin:0; flex:1 1 auto; width:auto; min-width:0; height:100%; aspect-ratio:auto; min-height:0; object-fit:cover; border-radius:10px; }
   .pcard[data-tall="1"] .pc-face { margin:0; flex:1 1 auto; display:grid; place-items:center; font-size:92px; opacity:0.16; }
   .pcard[data-tall="1"] .pc-nm { font-size:19px; text-align:center; letter-spacing:-0.01em; }
-  .pcard[data-tall="1"] .pc-line, .pcard[data-tall="1"] .pc-alt { text-align:center; }
+  /* Dai giua the bong chi mang TEN. Hai dong phu an di, tra 28px cho anh --
+     tuyen va vi tri phu van con o the gon. */
+  .pcard[data-tall="1"] .pc-line, .pcard[data-tall="1"] .pc-alt { display:none; }
+  .pcard[data-tall="1"] .pc-faces { gap:5px 12px; }
   /* Sau chi so xep 2 cot x 3 hang, dung nhip the bong. */
   .pcard[data-tall="1"] .pc-faces { grid-template-columns:repeat(2, minmax(0,1fr)); gap:7px 12px; }
   .pcard[data-tall="1"] .pc-stats { grid-template-columns:repeat(4, 1fr); gap:4px; }
