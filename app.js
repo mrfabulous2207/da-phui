@@ -761,7 +761,14 @@ function roleDuty(group, key, phase) {
     || (!phase && (ROLES_OOP[group] || []).find(x => x[0] === key));
   return (r && r[3]) || "bal";
 }
-const EXTRAS = [["wide","Dâng biên"],["free","Đá tự do"],["man","Kèm người"]];
+/* Chi dao ca nhan. Ba cai dau co tu truoc; nam cai sau la thu doi truong phui
+   noi thang vao tai mot nguoi truoc khi vao san. Moi cai phai co mat trong
+   `EXTRA_RULE` -- `extraState` doc bang do de biet cai nay DA NAM SAN trong vai
+   (part) hay DA NHAU voi vai (conflict). Thieu khai bao thi num hien ra trang
+   tron, khong noi duoc gi. */
+const EXTRAS = [["wide","Dâng biên"],["free","Đá tự do"],["man","Kèm người"],
+  ["cut","Cắt vào trong"],["holdup","Giữ bóng chờ đồng đội"],
+  ["shoot","Sút xa"],["cover","Bọc lót sau cánh"],["late","Dâng lên muộn"]];
 
 /* Team instructions, grouped the way FM26 groups them: what you do with the
    ball, what you do the second it changes hands, what you do without it. The
@@ -1722,11 +1729,34 @@ const EXTRA_RULE = {
           conflict: ["fb:invert", "fb:safe", "cb:stay", "mid:hold"] },
   free: { part: ["mid:box", "fw:drop"],
           conflict: ["cb:stay", "mid:hold", "fb:safe", "gk:keep"] },
-  man:  { part: [], conflict: [] }
+  man:  { part: [], conflict: [] },
+  // Cat vao trong la viec cua hau ve/tien dao bam bien nguoc chan -- doi lap
+  // han voi bam bien, nen no da nhau voi chinh "Dang bien" o cung mot nguoi.
+  cut:    { part: ["fb:invert", "fw:wideout"],
+            conflict: ["cb:stay", "cb:build", "gk:keep", "gk:distrib", "fb:safe"] },
+  holdup: { part: ["fw:target", "fw:drop"],
+            conflict: ["gk:keep", "gk:distrib", "cb:stay", "cb:build", "fb:safe"] },
+  shoot:  { part: ["mid:push", "fw:run"],
+            conflict: ["gk:keep", "gk:distrib", "cb:stay", "fb:safe"] },
+  cover:  { part: ["cb:stay", "mid:hold"],
+            conflict: ["fw:run", "fw:target", "fw:wideout", "mid:push"] },
+  late:   { part: ["mid:push", "mid:box"],
+            conflict: ["gk:keep", "gk:distrib", "cb:stay", "fb:safe", "mid:hold"] }
 };
-function extraState(key, grp, roleKey, tactic) {
+/* Hai chi dao da nhau ngay tren CUNG MOT NGUOI, khong lien quan den vai:
+   bam bien voi cat vao trong la hai huong nguoc nhau; boc lot sau canh voi dang
+   len muon cung vay; kem nguoi voi da tu do thi mot cai buoc chan, mot cai co
+   tha. `extraState` truoc day chi nhin VAI nen tich ca hai van im lang. */
+const EXTRA_PAIR = [["wide", "cut"], ["cover", "late"], ["man", "free"]];
+function extraFights(key, picked) {
+  const on = Array.isArray(picked) ? picked : [];
+  return EXTRA_PAIR.some(pr =>
+    (pr[0] === key && on.indexOf(pr[1]) >= 0) || (pr[1] === key && on.indexOf(pr[0]) >= 0));
+}
+function extraState(key, grp, roleKey, tactic, picked) {
   const r = EXTRA_RULE[key];
   if (!r) return "";
+  if (extraFights(key, picked)) return "conflict";
   const id = String(grp || "") + ":" + String(roleKey || "");
   if (r.conflict.indexOf(id) >= 0) return "conflict";
   if (r.part.indexOf(id) >= 0) return "part";
@@ -8575,18 +8605,25 @@ class Component extends DCLogic {
         const i = st.tacticSlot;
         const ovr = ((actTactic && actTactic.slots) || {})[i] || {};
         const on = k => (ovr.extras || []).indexOf(k) >= 0;
-        return EXTRAS.map(x => ({
+        /* Man Chien thuat truoc day KHONG goi `extraState` chut nao, nen tich
+           hai chi dao nguoc nhau o day thi im lang, trong khi cung viec do o
+           man Doi hinh lai bao. Mot app, hai luat -- nay mot. */
+        const grpT = ROLE_GROUP[FM_.labels[i]] || "mid";
+        const roleT = splitLegacyRole(grpT, ovr.role || "").role;
+        return EXTRAS.map(x => {
+        const stx = extraState(x[0], grpT, roleT, actTactic, ovr.extras);
+        return {
           label: x[1],
-          mark: on(x[0]) ? "✓" : "",
-          box: on(x[0]) ? "#C1D439" : "rgba(255,255,255,0.12)",
-          fg: on(x[0]) ? "#FAFAFF" : "rgba(250,250,255,0.7)",
+          mark: on(x[0]) ? "✓" : (stx === "part" ? "·" : ""),
+          box: stx === "conflict" && on(x[0]) ? "#FF6B57" : (on(x[0]) ? "#C1D439" : "rgba(255,255,255,0.12)"),
+          fg: stx === "conflict" && on(x[0]) ? "#FF6B57" : (on(x[0]) ? "#FAFAFF" : (stx ? "rgba(250,250,255,0.45)" : "rgba(250,250,255,0.7)")),
           click: guard(() => {
             const cur = ((((actTactic && actTactic.slots) || {})[i] || {}).extras || []).slice();
             const at = cur.indexOf(x[0]);
             if (at >= 0) cur.splice(at, 1); else cur.push(x[0]);
             this.tacticSlotPatch(i, { extras: cur });
           })
-        }));
+        };});
       })() : [],
 
       /* ---------- pitch: demo motion + drawing ---------- */
@@ -8853,7 +8890,7 @@ class Component extends DCLogic {
         const grp2 = ROLE_GROUP[FM_.labels[i]] || "mid";
         const curRole = splitLegacyRole(grp2, ovr.role || "").role;
         return EXTRAS.map(x => {
-          const stx = extraState(x[0], grp2, curRole, actTactic);
+          const stx = extraState(x[0], grp2, curRole, actTactic, ovr.extras);
           const isOn = on(x[0]);
           return {
           label: x[1],
