@@ -634,7 +634,12 @@
      tien ve chong khit len nhau. Tu 1280 den 1599 tra ve mot cot; phan tinh kich
      thuoc san o khoi 1280 van giu nguyen, vi `--pitch-ar` khai trong do -- go ca
      khoi di thi cong thuc be rong mat bien va san lai ve 0. */
-  @media (min-width:1280px) and (max-width:1599px) {
+  /* Nguong hai cot: do tren app that, cot san = be ngang man - 1316 (rail 220 +
+     cot phai 710 + cot chi dao 310 + khe). O 1600 no ra 284px, trong khi che do
+     MOT cot o cung 1600 cho san 429px -- tuc man rong hon ma san NHO hon. Hai
+     ben bang nhau o 1745, nen lay 1750. Truoc day nguong la 1600, doan
+     1600-1749 dang chay hai cot voi san 284-433px. */
+  @media (min-width:1280px) and (max-width:1749px) {
     .fmpitchpane { grid-template-columns:minmax(0,1fr) !important; }
     /* San o khoi nay hep hon (405px thay vi 604px), ma bien ten van an 27cqw nen
        ba o tien ve cham nhau -- do duoc 23 va 24px chong lan. Ba o giua cach nhau
@@ -652,6 +657,22 @@
 
        Xep doc thi man dai them mot doan phai cuon, nhung khong co gi che gi. */
     .lp-col2 { grid-row:auto !important; }
+    /* ...nhung "man dai them mot doan phai cuon" o tren la SAI: `.fmpitchpane`
+       la mot hop cao co dinh voi `overflow:hidden`, khong co thanh cuon nao het.
+       Do o 1440x900: luoi chia deu con lai thanh cac hang 312px trong khi san
+       cao cung 640px (`--pitch-h`), nen san tran ra de len `.lp-hint`, va 150px
+       cuoi cung bi CAT hang -- mat nguyen hang nut "Tu dong / Xoa het / Khac",
+       khong dau hieu gi bao la con noi dung ben duoi. Hang auto de hang khong bi
+       ep, `auto` de phan khong vua thi cuon duoc thay vi bien mat. */
+    .fmpitchpane { grid-template-rows:max-content !important; grid-auto-rows:max-content !important; align-content:start !important; overflow-y:auto !important; }
+    /* `align-content` phai dat cung luc: luoi co chieu cao XAC DINH (742px) thi
+       mac dinh `normal` = stretch, nen cac hang `auto` van bi keo cho day khung
+       -- do duoc dung 44/312/44/312, va san cao cung 640 tran ra de len dong goi
+       y 318px. `start` tra hang ve dung chieu cao noi dung, phan thua thi cuon.
+       Va phai la `max-content`, KHONG phai `auto`: do tren app that, hang `auto`
+       trong mot luoi co chieu cao xac dinh van bi co lai (44/312/44/312) du item
+       ben trong cao 640 -- tuc san van de len dong goi y. `max-content` giu dung
+       chieu cao noi dung: 44/640/44/462, khong con cho nao de len cho nao. */
   }
   @media (min-width:1600px) {
     .fmfund { display:grid !important; columns:auto !important; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:16px; align-items:start; }

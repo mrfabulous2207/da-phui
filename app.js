@@ -5342,7 +5342,7 @@ class Component extends DCLogic {
       isMatchLog: (st.tab === "fund" && st.teamView === "log"),
       isHall: (st.tab === "fund" && st.teamView === "hall"),
       isTeamNav: st.tab === "fund" || st.tab === "team",
-      teamViews: (teamViewNow => [["settings", "Cài đặt đội"], ["hall", "Phòng truyền thống"], ["log", "Lịch sử trận"], ["fund", "Quỹ"]].map(v => ({
+      teamViews: (teamViewNow => [["fund", "Quỹ"], ["log", "Lịch sử trận"], ["hall", "Phòng truyền thống"], ["settings", "Cài đặt đội"]].map(v => ({
         label: v[1],
         bg: (teamViewNow === v[0]) ? "#6821DC" : "#121526",
         fg: (teamViewNow === v[0]) ? "#FAFAFF" : "rgba(250,250,255,0.7)",
