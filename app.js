@@ -1541,6 +1541,23 @@ function hexBox(rating) {
   return { w: r3(w), h: r3(h), x: r3((HEX_W - w) / 2), y: r3((HEX_H - h) / 2) };
 }
 
+/* "Kiem tra mang roi thu lai" la loi khuyen SAI trong dung truong hop hay gap
+   nhat. Du an Supabase goi free TU TAM DUNG khi lau ngay khong ai dung, va luc
+   do ten mien bien mat han (NXDOMAIN) -- may van co mang, van vao duoc moi thu
+   khac, chi rieng may chu la khong. Bao "kiem tra mang" thi nguoi ta di khoi
+   dong lai router, trong khi viec can lam la vao Supabase bam khoi phuc.
+   Da mat vai tuan vi chinh cau nay.
+
+   `navigator.onLine` phan biet duoc hai truong hop. No khong hoan hao -- true
+   chi co nghia la may co duong mang -- nhung false thi CHAC CHAN la mat mang,
+   nen cau tra ve khong bao gio noi sai. */
+function netWhy(online) {
+  return online === false
+    ? "Máy đang không có mạng — bật mạng rồi thử lại."
+    : "Máy chủ không trả lời — có thể đang tạm dừng. Nhờ người dựng app khôi phục giúp.";
+}
+const netNow = () => netWhy(typeof navigator !== "undefined" ? navigator.onLine : true);
+
 function matchByDay(matches) {
   const out = {};
   (matches || []).forEach(g => {
@@ -3190,7 +3207,7 @@ class Component extends DCLogic {
       const m = this.cloudMeta();
       if (m && m.code) sbRpc("team_attend", { p_code: m.code, p_occ: String(key), p_member: String(memberId), p_value: value || "" })
         .then(() => this.setState({ netErr: "" }))
-        .catch(() => this.setState({ netErr: "Điểm danh chưa lên được máy chủ — thử lại khi có mạng." }));
+        .catch(() => this.setState({ netErr: "Điểm danh chưa lên được máy chủ. " + netNow() }));
       return { attendByOcc };
     });
   }
@@ -3313,7 +3330,7 @@ class Component extends DCLogic {
          khong con ten mien -- tinh huong nay se quay lai, khong phai hiem. */
       this.setState({ loginErr: /ma doi khong dung|không tìm thấy/.test(e.message)
         ? "Mã đội không đúng. Kiểm tra lại mã đội trưởng gửi."
-        : "Chưa vào được đội — máy chưa nối được tới máy chủ. Kiểm tra mạng rồi thử lại." });
+        : ("Chưa vào được đội. " + netNow()) });
       return;
     }
     const data = row.data || {};
@@ -3330,7 +3347,7 @@ class Component extends DCLogic {
         phone: pnd.phone, rating: 10, load: 0, owed: 0 } });
       joined = jr && jr[0];
     } catch (e) {
-      this.setState({ loginErr: "Vào được đội nhưng chưa ghi được tên bạn lên máy chủ — thử lại khi có mạng." });
+      this.setState({ loginErr: "Vào được đội nhưng chưa ghi được tên bạn lên máy chủ. " + netNow() });
       return;
     }
     this.setState(s => {
@@ -3422,7 +3439,7 @@ class Component extends DCLogic {
       /* KHONG do `e.message` ra man hinh: no la chu ky thuat cua thu vien mang
          ("Failed to fetch", "b", "NetworkError...") va nguoi dung phui khong doc
          duoc gi tu do. Noi cai ho lam duoc. */
-      this.setState({ loginErr: "Chưa tạo được đội — máy chưa nối được tới máy chủ. Kiểm tra mạng rồi thử lại." });
+      this.setState({ loginErr: "Chưa tạo được đội. " + netNow() });
       return;
     }
     const salt = pwSalt(), hash = await pwHash(this.state.pending.pass, salt);
@@ -8954,7 +8971,7 @@ class Component extends DCLogic {
         }
         this.cloudSet({ ...m, rev: row.rev }); this.teamListPut({ code: m.code, rev: row.rev, name: row.name, short: row.short_code }); this.teamListPut({ code: m.code, rev: row.rev });
         this.setState({ netErr: "" });
-      } catch (e) { this.setState({ netErr: "Mất kết nối máy chủ — đang lưu tạm trên máy này." }); }
+      } catch (e) { this.setState({ netErr: "Đang lưu tạm trên máy này. " + netNow() }); }
     }, 600);
   }
 
@@ -8977,7 +8994,7 @@ class Component extends DCLogic {
       this._applyingRemote = false;
     } catch (e) {
       this._applyingRemote = false;
-      this.setState({ netErr: "Mất kết nối máy chủ — đang xem bản lưu trên máy này." });
+      this.setState({ netErr: "Đang xem bản lưu trên máy này. " + netNow() });
     }
   }
 
