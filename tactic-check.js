@@ -1908,6 +1908,33 @@ eq(forPlan(SP, "on", planKeyOf("B", "")).length, 1, "chay tran chi thay ke hoach
 eq(forPlan(SP, "on", planKeyOf("B", "ca")).length, 1, "phat goc ta chi thay cua no");
 eq(forPlan(SP, "on", planKeyOf("B", "fd")).length, 0, "tinh huong chua dung gi thi trong");
 
+/* Them num chi dao chi co nghia neu CACH DA cung biet mac dinh cho no --
+   thieu mot khoa la num do rong khong, va `insOf` tra undefined. */
+INS_ROWS.forEach(r => {
+  ["def", "bal", "att"].forEach(m => {
+    ok(MENTALITY_INS[m][r.key] !== undefined, "cach da " + m + " co mac dinh cho num " + r.key);
+    ok(r.opts.some(o => o[0] === MENTALITY_INS[m][r.key]),
+       "mac dinh cua " + m + " cho " + r.key + " phai la mot lua chon co that");
+  });
+  ok(r.opts.length >= 2, "num " + r.key + " phai co it nhat hai lua chon");
+  eq(new Set(r.opts.map(o => o[0])).size, r.opts.length, "num " + r.key + " khong co lua chon trung ma");
+});
+eq(new Set(INS_ROWS.map(r => r.key)).size, INS_ROWS.length, "khong num nao trung khoa");
+
+/* Nam mau thuan moi: moi cai phai BAT khi dat nguoc, va KHONG bat o cach da
+   mac dinh -- canh bao keu suot thi khong ai doc nua. */
+const T = ins => ({ ins: Object.assign({}, MENTALITY_INS.bal, ins) });
+const RK = [{ group: "cb", duty: "def" }, { group: "fb", duty: "att" }, { group: "fw", duty: "att" }];
+const co = (ins, chu) => tacticConflicts(T(ins), RK).some(x => x.indexOf(chu) >= 0);
+ok(co({ gkKick: "short", pass: "long" }, "phát bóng"), "thu mon phat ngan + doi phat dai = mau thuan");
+ok(co({ trap: "on", line: "low" }, "việt vị"), "bay viet vi + hang thu thap = mau thuan");
+ok(co({ trap: "on", mark: "man" }, "việt vị"), "bay viet vi + kem nguoi = mau thuan");
+ok(co({ hold: "slow", onLoss: "counter" }, "câu giờ"), "cau gio + vay lai ngay = mau thuan");
+ok(co({ side: "left", width: "narrow" }, "một góc"), "danh mot ben + choi hep = mau thuan");
+eq(co({ gkKick: "long", pass: "long" }, "phát bóng"), false, "hai cai cung phat dai thi khong mau thuan");
+eq(co({ trap: "off", line: "low" }, "việt vị"), false, "khong bay viet vi thi khong keu");
+eq(co({ side: "both", width: "narrow" }, "một góc"), false, "danh deu hai ben thi choi hep khong sao");
+
 eq(restPenalty({ tired: true, streak: 3 }), 7, "da 3 buoi lien thi bi tru 7");
 eq(restPenalty({ tired: true, streak: 5 }), 9, "da nhieu hon thi tru nang hon");
 eq(restPenalty({ tired: false, streak: 9 }), 0, "chua tinh la met thi khong tru");

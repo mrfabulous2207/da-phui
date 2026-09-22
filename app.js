@@ -770,7 +770,14 @@ const EXTRAS = [["wide","Dâng biên"],["free","Đá tự do"],["man","Kèm ngư
 const INS_PHASES = [
   { key: "on", label: "CÓ BÓNG", rows: [
     { key: "tempo", label: "Nhịp độ", opts: [["slow","Chậm","Giữ bóng, chờ khoảng trống mở ra."],["mid","Vừa","Luân chuyển bình thường."],["fast","Nhanh","Đẩy bóng lên sớm, ít chạm."]] },
-    { key: "width", label: "Chơi rộng", opts: [["narrow","Hẹp","Dồn vào trong, đá phối hợp ngắn."],["mid","Vừa","Giữ cự ly bình thường."],["wide","Rộng","Kéo ra hai biên, kéo giãn đối phương."]] }
+    { key: "width", label: "Chơi rộng", opts: [["narrow","Hẹp","Dồn vào trong, đá phối hợp ngắn."],["mid","Vừa","Giữ cự ly bình thường."],["wide","Rộng","Kéo ra hai biên, kéo giãn đối phương."]] },
+    /* Bon num nay la thu doi phui thuc su noi voi nhau truoc tran, ma app truoc
+       gio khong co cho ghi: phat dai hay dung tu duoi, danh ben nao, thu mon
+       phat the nao, dan ban roi thi lam gi. */
+    { key: "pass", label: "Đưa bóng lên", opts: [["short","Ngắn","Chuyền chân, dựng từ sân nhà."],["mix","Vừa","Ngắn là chính, có bóng dài khi thấy khoảng."],["long","Phất dài","Bỏ tuyến giữa, tìm ngay người trên."]] },
+    { key: "side", label: "Đánh bên nào", opts: [["left","Trái","Dồn bóng sang cánh trái."],["both","Đều hai bên","Không ưu tiên bên nào."],["right","Phải","Dồn bóng sang cánh phải."]] },
+    { key: "gkKick", label: "Thủ môn phát bóng", opts: [["short","Ngắn cho hậu vệ","Dựng bóng từ dưới, rủi ro nếu họ áp sát."],["long","Phất dài","An toàn, nhưng mất bóng nhiều hơn."]] },
+    { key: "hold", label: "Dẫn bàn thì", opts: [["push","Đá tiếp","Ăn thêm, không hạ nhịp."],["slow","Giữ bóng câu giờ","Kéo ra biên, chậm lại."]] },
   ] },
   { key: "trans", label: "CHUYỂN TRẠNG THÁI", rows: [
     { key: "onLoss", label: "Vừa mất bóng", opts: [["counter","Vây lại ngay","Đoạt lại trong 5 giây đầu, rủi ro nếu hết hơi."],["drop","Lùi về đội hình","Bỏ bóng, về đứng đúng vị trí trước."]] },
@@ -779,7 +786,8 @@ const INS_PHASES = [
   { key: "off", label: "MẤT BÓNG", rows: [
     { key: "line", label: "Dâng cao", opts: [["low","Thấp","Lùi sâu, khó bị bóng dài qua đầu."],["mid","Vừa","Giữ quanh giữa sân."],["high","Cao","Bắt việt vị, nhưng hở lưng."]] },
     { key: "press", label: "Áp sát", opts: [["low","Ít","Đứng khối, đỡ tốn sức."],["mid","Vừa","Áp sát từ giữa sân."],["high","Nhiều","Đuổi từ sân đối phương, rất tốn sức."]] },
-    { key: "mark", label: "Cách kèm", opts: [["zone","Khu vực","Mỗi người giữ một vùng."],["man","Kèm người","Mỗi người bám một người, theo tậy sân."]] }
+    { key: "mark", label: "Cách kèm", opts: [["zone","Khu vực","Mỗi người giữ một vùng."],["man","Kèm người","Mỗi người bám một người, theo tậy sân."]] },
+    { key: "trap", label: "Bẫy việt vị", opts: [["off","Không","An toàn, lùi theo người."],["on","Có","Cả hàng dâng cùng lúc — cần trọng tài có bắt việt vị."]] },
   ] }
 ];
 const INS_ROWS = INS_PHASES.reduce((a, p) => a.concat(p.rows), []);
@@ -789,9 +797,9 @@ const INS_ROWS = INS_PHASES.reduce((a, p) => a.concat(p.rows), []);
    instruction the captain touched keeps its own value and says so -- the same
    inherited-vs-overridden state FM shows. */
 const MENTALITY_INS = {
-  def: { tempo: "slow", width: "narrow", onLoss: "drop",    onWin: "keep",   line: "low",  press: "low",  mark: "zone" },
-  bal: { tempo: "mid",  width: "mid",    onLoss: "drop",    onWin: "direct", line: "mid",  press: "mid",  mark: "zone" },
-  att: { tempo: "fast", width: "wide",   onLoss: "counter", onWin: "direct", line: "high", press: "high", mark: "zone" }
+  def: { tempo: "slow", width: "narrow", onLoss: "drop",    onWin: "keep",   line: "low",  press: "low",  mark: "zone", pass: "long",  side: "both", gkKick: "long",  hold: "slow", trap: "off" },
+  bal: { tempo: "mid",  width: "mid",    onLoss: "drop",    onWin: "direct", line: "mid",  press: "mid",  mark: "zone", pass: "mix",   side: "both", gkKick: "long",  hold: "push", trap: "off" },
+  att: { tempo: "fast", width: "wide",   onLoss: "counter", onWin: "direct", line: "high", press: "high", mark: "zone", pass: "short", side: "both", gkKick: "short", hold: "push", trap: "off" }
 };
 // What a tactic actually plays at: the captain's own choice, else Cách đá.
 function insOf(tactic, key) {
@@ -883,6 +891,17 @@ function tacticConflicts(tactic, roleKeys) {
     out.push("\u0110\u00e1 nhanh nh\u01b0ng b\u00f3 h\u1eb9p \u2014 kh\u00f4ng c\u00f3 kho\u1ea3ng tr\u1ed1ng n\u00e0o \u0111\u1ec3 \u0111\u1ea9y b\u00f3ng v\u00e0o.");
   if (g("press") === "high" && g("onWin") === "keep")
     out.push("\u0110\u00f2i b\u00f3ng t\u1eadn s\u00e2n h\u1ecd r\u1ed3i h\u1ea1 nh\u1ecbp \u2014 b\u1ecf ph\u00ed \u0111\u00fang gi\u00e2y h\u1ecd \u0111ang h\u1edf ng\u01b0\u1eddi.");
+  /* Nam mau thuan moi, deu la cau doi phui thuc su noi nguoc nhau truoc tran. */
+  if (g("gkKick") === "short" && g("pass") === "long")
+    out.push("Thủ môn phát ngắn nhưng cả đội được bảo phất dài — hai câu ngược nhau ngay từ quả phát bóng.");
+  if (g("trap") === "on" && g("line") === "low")
+    out.push("Bẫy việt vị nhưng hàng thủ đứng thấp — bẫy ngay trước vòng cấm nhà, hỏng là họ đối mặt thủ môn.");
+  if (g("trap") === "on" && g("mark") === "man")
+    out.push("Bẫy việt vị cần cả hàng dâng cùng lúc, mà kèm người thì mỗi người chạy theo một hướng.");
+  if (g("hold") === "slow" && g("onLoss") === "counter")
+    out.push("Dẫn bàn thì câu giờ, nhưng mất bóng lại đòi vây lại ngay — hai lệnh ngược nhau về sức.");
+  if (g("side") !== "both" && g("width") === "narrow")
+    out.push("Đánh dồn một bên nhưng chơi hẹp — cả đội dồn vào một góc chật.");
   const atts = posture.filter(d => d === "att").length;
   if (g("line") === "low" && atts >= Math.max(2, Math.ceil(posture.length / 3)))
     out.push("\u0110\u1ee9ng th\u1ea5p nh\u01b0ng " + atts + " ng\u01b0\u1eddi \u0111\u01b0\u1ee3c giao d\u00e2ng cao \u2014 kho\u1ea3ng c\u00e1ch gi\u1eefa hai tuy\u1ebfn s\u1ebd r\u1ea5t xa.");
