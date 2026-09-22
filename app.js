@@ -8015,6 +8015,62 @@ class Component extends DCLogic {
          dang nhap bang mot cau thu thuong va tai duoc no -- moi thao tac GHI da
          bi chan dung, nhung hai cai nay khong phai ghi nen lot. Doc du lieu ca
          nhan cua nguoi khac cung la mot quyen. */
+      /* Truoc day khong co duong nao dua toan bo du lieu ra khoi may. Chi co
+         CSV danh sach nguoi -- khong quy, khong lich, khong doi hinh, va nhat
+         la KHONG co chia sua. Tat ca nam trong localStorage cua dung mot trinh
+         duyet cong mot dong tren Supabase goi free (thu tu tam dung khi lau
+         ngay khong ai dung). Hai cho do hong cung luc la mat sach. */
+      exportAll: guard(() => {
+        const b = this.backupBlob();
+        if (!b.data) { this.setState({ copied: "Máy này chưa có dữ liệu gì để lưu." }); return; }
+        const d = new Date(), p2 = n => String(n).padStart(2, "0");
+        const stamp = d.getFullYear() + "-" + p2(d.getMonth() + 1) + "-" + p2(d.getDate());
+        const url = URL.createObjectURL(new Blob([JSON.stringify(b, null, 1)], { type: "application/json" }));
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = String(team.name || "doi").replace(/\s+/g, "-").toLowerCase() + "-du-phong-" + stamp + ".json";
+        document.body.appendChild(a); a.click(); a.remove();
+        setTimeout(() => URL.revokeObjectURL(url), 2000);
+        const nT = (b.teams || []).length, nM = ((b.data || {}).members || []).length;
+        this.setState({ copied: "Đã tải bản dự phòng · " + nM + " người · " + nT + " đội · có kèm chìa sửa. Giữ tệp này kín." });
+      }),
+      /* Nap lai = THAY THE ca ba khoa roi tai lai trang. Noi that no cuu duoc gi:
+         may moi / may vua bi xoa sach / may chu chet han. KHONG phai "hoan tac
+         mot sua doi" -- may chu con song thi nhip keo 8 giay se de ban cua no
+         len trong vong tam giay, va do la dung. */
+      pickBackup: guard(e => {
+        const f = e.target.files && e.target.files[0];
+        e.target.value = "";
+        if (!f) return;
+        const rd = new FileReader();
+        rd.onerror = () => this.setState({ copied: "Không đọc được tệp này." });
+        rd.onload = () => {
+          let b = null;
+          try { b = JSON.parse(String(rd.result)); } catch (x) {}
+          if (!b || b.app !== "da-phui" || !b.data) {
+            this.setState({ copied: "Tệp này không phải bản dự phòng của Đá Phủi App." });
+            return;
+          }
+          const nM = ((b.data || {}).members || []).length;
+          const when = String(b.at || "").slice(0, 10) || "không rõ ngày";
+          const NL = String.fromCharCode(10);
+          if (typeof confirm === "function" && !confirm(
+              "Nạp bản dự phòng ngày " + when + " (" + nM + " người)?" + NL + NL +
+              "Mọi dữ liệu đang có trên máy này sẽ bị thay thế. Không hoàn tác được." + NL +
+              "Nếu đội vẫn còn trên máy chủ thì bản trên máy chủ mới là bản cuối cùng.")) return;
+          try {
+            localStorage.setItem(KEY, JSON.stringify(b.data));
+            if (b.cloud) localStorage.setItem(CLOUD_KEY, JSON.stringify(b.cloud));
+            else localStorage.removeItem(CLOUD_KEY);
+            if (b.teams) localStorage.setItem("dpfm-teams", JSON.stringify(b.teams));
+          } catch (x) {
+            this.setState({ copied: "Máy không cho ghi — bộ nhớ trình duyệt đầy?" });
+            return;
+          }
+          if (typeof location !== "undefined") location.reload();
+        };
+        rd.readAsText(f);
+      }),
       exportCsv: guard(() => {
         const head = ["So ao", "Ten", "Ten in ao", "Size", "Vi tri", "Ngay sinh", "SDT", "Loai", "Hang"];
         const cell = v => '"' + String(v == null ? "" : v).replace(/"/g, '""') + '"';
@@ -8800,6 +8856,19 @@ class Component extends DCLogic {
   }
 
   /* ---------- đồng bộ ---------- */
+
+  /* Ba khoa localStorage moi la "toan bo du lieu", khong phai mot:
+       dpfm-v3     du lieu doi (nguoi, quy, lich, doi hinh)
+       dpfm-cloud  { code, rev, adminKey } cua doi dang mo
+       dpfm-teams  danh sach doi may nay biet, MOI DOI KEM CHIA SUA
+     Thieu hai khoa sau thi ban du phong khong cuu duoc gi: chia sua 16 ky tu
+     chi may tao doi giu, may chu KHONG dua lai lan thu hai. Mat no la doi do
+     khong con ai sua duoc nua, vinh vien. */
+  backupBlob() {
+    const pick = k => { try { return JSON.parse(localStorage.getItem(k) || "null"); } catch (e) { return null; } };
+    return { app: "da-phui", v: 1, at: new Date().toISOString(),
+             data: pick(KEY), cloud: pick(CLOUD_KEY), teams: pick("dpfm-teams") };
+  }
 
   cloudMeta() { try { return JSON.parse(localStorage.getItem(CLOUD_KEY) || "null"); } catch (e) { return null; } }
   cloudSet(m) { try { m ? localStorage.setItem(CLOUD_KEY, JSON.stringify(m)) : localStorage.removeItem(CLOUD_KEY); } catch (e) {} }
