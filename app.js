@@ -2655,7 +2655,7 @@ class Component extends DCLogic {
     members: [],
     ledger: [],
     slotsByTeam: {}, picked: null, kitByTeam: {},
-    attendByOcc: {}, paidByOcc: {}, teamNameDraft: null, occ: "", menu: null, wide3: true, wide6: false, lineupView: "squad", teamView: "fund", matchKindByOcc: {}, slotOvr: {}, teamTab: "A", paneTab: "pitch", shapeTab: "shape", narrow: false, wide4: false, pickedSlot: null, demoOn: false, demoPhase: 0, drawMode: false, drawFrom: null, poolOpen: { yes: true, none: false, no: false }, tacticLib: {}, tacticSel: {}, tacticSlot: null, sizeAsk: null, ctx: null, tacticsByTeam: {}, closedOcc: {}, undo: null, memberView: "list", splitOpen: false, charges: [], splitByOcc: {}, benchByTeam: {}, slotsByOcc: {}, hiddenCols: {}, formation: "1-2-3-1", formOpen: false, settledAt: {}, settledTick: 0, waivedByOcc: {}, barOpen: false, nameMode: "both", tacPhase: "on", autoWhy: [], authMode: "login", pass2: "", notesOff: {}, door: "", netErr: "", dobInput: "", invite: "", pw: {}, pwh: {}, arrows: [], subs: [], foesOn: false, steps: [], stepI: 0, stepMode: false, playMs: null,
+    attendByOcc: {}, paidByOcc: {}, teamNameDraft: null, occ: "", menu: null, wide3: true, wide6: false, lineupView: "squad", teamView: "fund", matchKindByOcc: {}, slotOvr: {}, teamTab: "A", paneTab: "pitch", shapeTab: "shape", narrow: false, wide4: false, pickedSlot: null, demoOn: false, demoPhase: 0, drawMode: false, drawFrom: null, poolOpen: { yes: true, none: false, no: false }, tacticLib: {}, tacticSel: {}, tacticSlot: null, sizeAsk: null, ctx: null, tacticsByTeam: {}, closedOcc: {}, undo: null, memberView: "list", splitOpen: false, charges: [], splitByOcc: {}, benchByTeam: {}, slotsByOcc: {}, hiddenCols: {}, formation: "1-2-3-1", formOpen: false, settledAt: {}, settledTick: 0, waivedByOcc: {}, barOpen: false, nameMode: "both", tacPhase: "on", autoWhy: [], authMode: "login", pass2: "", notesOff: {}, door: "", netErr: "", dobInput: "", invite: "", pw: {}, pwh: {}, arrows: [], subs: [], foesOn: false, steps: [], stepI: 0, stepMode: false, playMs: null, akShow: false,
     teams: [], pending: null, joinCode: "", newTeam: "", nameInput: "", promoteId: "", evEditId: null, copied: "", lineupMsg: "", filter: "", q: "", sel: null, split: null, quickKey: "",
     // rankBy rong = chua ai chon cot; luc do `defaultRankBy` quyet dinh theo
     // du lieu that. De san "rating" o day thi ham do khong bao gio chay.
@@ -8020,6 +8020,29 @@ class Component extends DCLogic {
          la KHONG co chia sua. Tat ca nam trong localStorage cua dung mot trinh
          duyet cong mot dong tren Supabase goi free (thu tu tam dung khi lau
          ngay khong ai dung). Hai cho do hong cung luc la mat sach. */
+      /* Chia sua 16 ky tu CHUA TUNG hien ra o dau ca -- no chi nam trong
+         localStorage. Nguoi dung khong biet la co no, nen khong the chep lai,
+         nen mat may la mat doi. May chu cung khong dua lai: `team_create` tra
+         no dung mot lan, va `team_pull` co y KHONG tra (ai co ma doc cung goi
+         duoc ham do).
+
+         Cho hien ra CHU KHONG them cua khoi phuc nao tren may chu: mot ham
+         "lay lai chia bang ma doi" se bien ma doc thanh ma sua, tuc pha bo hai
+         chia lam mot. */
+      hasAdminKey: !!(this.cloudMeta() || {}).adminKey,
+      noAdminKey: !(this.cloudMeta() || {}).adminKey,
+      akShown: !!st.akShow,
+      adminKeyText: (() => {
+        const k = (this.cloudMeta() || {}).adminKey || "";
+        return st.akShow ? k : k.replace(/./g, "•");
+      })(),
+      akToggleLabel: st.akShow ? "Ẩn" : "Hiện",
+      toggleAdminKey: guard(() => this.setState(s2 => ({ akShow: !s2.akShow }))),
+      copyAdminKey: guard(() => {
+        const k = (this.cloudMeta() || {}).adminKey || "";
+        if (!k) { this.setState({ copied: "Máy này không giữ chìa sửa của đội nào." }); return; }
+        this.copyText(k);
+      }),
       exportAll: guard(() => {
         const b = this.backupBlob();
         if (!b.data) { this.setState({ copied: "Máy này chưa có dữ liệu gì để lưu." }); return; }
