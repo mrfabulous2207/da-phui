@@ -899,6 +899,43 @@ function phaseOf(v) { return (v && v.ph) === "off" ? "off" : "on"; }
 function forPhase(list, phase) {
   return (list || []).filter(v => phaseOf(v) === (phase === "off" ? "off" : "on"));
 }
+/* `steps` va `arrows` von la HAI MANG PHANG TOAN CUC: khong theo buoi, khong
+   theo doi, khong theo so do. Nen bay ke hoach dung cho tran thu Tu van hien
+   nguyen xi o tran thu Bay, va -- te hon -- `steps[i].pos` la mang theo CHI SO
+   O, nen mot bo buoc luu o san 5 dem ap len san 11 thi bay o dau tien nhan vi
+   tri cu con bon o con lai trong tron.
+
+   Nay moi ban ghi mang them `k` = khoa ke hoach: buoi + ben + SO O. So o nam
+   trong khoa co chu dich -- doi co san la doi bai toan, khong phai doi cach
+   nhin cung mot bai toan.
+
+   Ban ghi cu khong co `k` thuoc ve "chua gan buoi nao" (`""`). Chung KHONG bi
+   xoa: `stampPlans` gan chung vao ke hoach dang mo dung mot lan, tuc dung cho
+   nguoi dung dang nhin thay chung hom nay. */
+function planOf(v) { return (v && typeof v.k === "string") ? v.k : ""; }
+function forPlan(list, phase, key) {
+  const ph = phase === "off" ? "off" : "on";
+  const k = typeof key === "string" ? key : "";
+  return (list || []).filter(v => phaseOf(v) === ph && planOf(v) === k);
+}
+// Chi so trong mang day du, tinh tu chi so thu `i` trong danh sach da loc.
+function planIndex(list, phase, key, i) {
+  const ph = phase === "off" ? "off" : "on";
+  const k = typeof key === "string" ? key : "";
+  let n2 = -1;
+  for (let n = 0; n < (list || []).length; n++) {
+    if (phaseOf(list[n]) === ph && planOf(list[n]) === k) { n2++; if (n2 === i) return n; }
+  }
+  return -1;
+}
+/* Gan ban ghi cu (chua co `k`) vao khoa dang mo. Tra ve chinh mang cu khi khong
+   co gi de gan, de noi goi biet la khong can ghi xuong. */
+function stampPlans(list, key) {
+  const src = list || [];
+  if (!src.some(v => v && typeof v.k !== "string")) return src;
+  return src.map(v => (v && typeof v.k !== "string") ? { ...v, k: typeof key === "string" ? key : "" } : v);
+}
+
 // Chi so trong mang day du, tinh tu chi so thu `i` trong danh sach da loc.
 function phaseIndex(list, phase, i) {
   let k = -1;
@@ -3041,8 +3078,8 @@ class Component extends DCLogic {
   stepSave(pos) {
     const ph = this._phase === "off" ? "off" : "on";
     this.setState(s => {
-      const steps = (s.steps || []).concat([{ pos: pos.map(p => [p[0], p[1]]), ph }]);
-      const mine = forPhase(steps, ph);
+      const steps = (s.steps || []).concat([{ pos: pos.map(p => [p[0], p[1]]), ph, k: this._planKey || "" }]);
+      const mine = forPlan(steps, ph, this._planKey);
       this.persist({ steps });
       return { steps, stepI: mine.length - 1, copied: "Đã lưu bước " + mine.length + "." };
     });
@@ -3050,18 +3087,18 @@ class Component extends DCLogic {
   stepDrop(i) {
     const ph = this._phase === "off" ? "off" : "on";
     this.setState(s => {
-      const gi = phaseIndex(s.steps, ph, i);
+      const gi = planIndex(s.steps, ph, this._planKey, i);
       if (gi < 0) return {};
       const steps = (s.steps || []).filter((_, n) => n !== gi);
       this.persist({ steps });
-      return { steps, stepI: Math.max(0, Math.min(s.stepI, forPhase(steps, ph).length - 1)) };
+      return { steps, stepI: Math.max(0, Math.min(s.stepI, forPlan(steps, ph, this._planKey).length - 1)) };
     });
   }
   // Kéo một người sang chỗ khác TRONG bước đang mở -- không đổi chỗ hai cầu thủ.
   stepMove(idx, x, y) {
     const ph = this._phase === "off" ? "off" : "on";
     this.setState(s => {
-      const gi = phaseIndex(s.steps, ph, s.stepI);
+      const gi = planIndex(s.steps, ph, this._planKey, s.stepI);
       const steps = (s.steps || []).map((st2, n) => {
         if (n !== gi) return st2;
         const pos = st2.pos.map(p => [p[0], p[1]]);
@@ -3655,6 +3692,24 @@ class Component extends DCLogic {
     // to it on read, so a squad saved at one pitch size never leaves players
     // occupying invisible slots at another.
     this._slotCount = SLOT_ROLES.length;
+    /* Khoa ke hoach: buoi + ben + so o. `steps`/`arrows` loc theo no. */
+    const planKey = slotKey + "#" + SLOT_ROLES.length;
+    this._planKey = planKey;
+    /* Ban ghi cu (ve tu truoc khi co khoa) khong bi xoa: gan chung vao ke hoach
+       DANG MO -- dung cho nguoi dung dang nhin thay chung hom nay. Chay dung mot
+       lan vi sau khi gan thi khong con ban ghi nao thieu `k`. Khong goi
+       `setState` trong luc dang render: hoan sang nhip sau. */
+    if (!this._stamped) {
+      const a0 = stampPlans(st.arrows, planKey), s0 = stampPlans(st.steps, planKey);
+      if (a0 !== st.arrows || s0 !== st.steps) {
+        this._stamped = true;
+        setTimeout(() => this.setState(s2 => {
+          const out = { arrows: stampPlans(s2.arrows, planKey), steps: stampPlans(s2.steps, planKey) };
+          this.persist(out);
+          return out;
+        }), 0);
+      }
+    }
     const tplSlots = fitSlots((st.slotsByTeam || {})[teamId], SLOT_ROLES.length);
     // Phai dat SAU `tplSlots`: khoi nay chay ngay va doc no.
     /* Da noi bo: mot nguoi chi dung duoc o MOT ben. App von da biet ben kia
@@ -3832,7 +3887,7 @@ class Component extends DCLogic {
        - đang phát  -> nội suy giữa hai bước liên tiếp
        - đang sửa   -> đúng ảnh chụp của bước đang mở
        - còn lại    -> hình suy từ chỉ đạo, y như trước. */
-    const stepList = forPhase(st.steps, tacPhase);
+    const stepList = forPlan(st.steps, tacPhase, planKey);
     /* Hinh NEN de bo dem phat doan ap `transform` len -- xem `playApply`. */
     this._pitchBase = pitchShape;
     /* Dang PHAT thi `left`/`top` giu nguyen hinh nen: chuyen dong di bang
@@ -8499,7 +8554,7 @@ class Component extends DCLogic {
         { label: st.stepMode ? "Tắt dựng nhiều bước" : "Dựng nhiều bước", hint: "quay chuyển động", click: () => this.renderVals().toggleStep() },
         { label: st.foesOn ? "Ẩn đội đối thủ" : "Hiện đội đối thủ (minh hoạ)", click: () => this.renderVals().toggleFoes() },
         isAdmin && { label: st.drawMode ? "Dừng vẽ mũi tên" : "Vẽ mũi tên", click: () => this.renderVals().toggleDraw() },
-        isAdmin && forPhase(st.arrows, tacPhase).length > 0
+        isAdmin && forPlan(st.arrows, tacPhase, planKey).length > 0
           && { label: "Xoá mũi tên đã vẽ", tone: "danger", click: () => this.renderVals().clearDraw() }
       ]),
       /* "Cong cu san" (119px) cong "Chay thu" (105) cong dai XEP/LECH (121) cong khe
@@ -8520,17 +8575,17 @@ class Component extends DCLogic {
       drawFg: st.drawMode ? "#FAFAFF" : "rgba(250,250,255,0.7)",
       // Xoa ve chi xoa pha dang xem -- mui ten cua pha kia khong lien quan.
       clearDraw: guard(() => this.setState(s2 => {
-        const arrows = (s2.arrows || []).filter(v => phaseOf(v) !== tacPhase);
+        const arrows = (s2.arrows || []).filter(v => !(phaseOf(v) === tacPhase && planOf(v) === planKey));
         this.persist({ arrows });
         return { arrows, drawFrom: null };
       })),
       // Ban ghi cu co the con "Infinity%" tu truoc khi pitchPct co mat.
-      arrows: forPhase(st.arrows, tacPhase).filter(v =>
+      arrows: forPlan(st.arrows, tacPhase, planKey).filter(v =>
         ["x1", "y1", "x2", "y2"].every(k => isFinite(parseFloat(v[k])))),
-      hasArrows: forPhase(st.arrows, tacPhase).length > 0,
+      hasArrows: forPlan(st.arrows, tacPhase, planKey).length > 0,
       // San thu hai cung phai ve mui ten cua PHA CUA NO, khong thi doi pha xong
       // ban ke hoach bien mat ca hai ben.
-      arrows2: forPhase(st.arrows, otherPhase).filter(v =>
+      arrows2: forPlan(st.arrows, otherPhase, planKey).filter(v =>
         ["x1", "y1", "x2", "y2"].every(k => isFinite(parseFloat(v[k])))),
       // Opponents are the same size as our players now, so a straight mirror put
       // their forward on top of our keeper. Mirror the shape, then stagger it
@@ -8553,7 +8608,7 @@ class Component extends DCLogic {
          mot pha ba buoc con pha kia bon, bam "Sau" qua bon lan thi `livePos` rong
          va san lang le nhay ve hinh nen, khong mot dau hieu nao. */
       stepNext: () => this.setState(s => ({
-        stepI: Math.min(Math.max(0, forPhase(s.steps, this._phase === "off" ? "off" : "on").length - 1), s.stepI + 1),
+        stepI: Math.min(Math.max(0, forPlan(s.steps, this._phase === "off" ? "off" : "on", this._planKey).length - 1), s.stepI + 1),
         playMs: null })),
       stepDel: () => this.stepDrop(st.stepI),
       stepPlayNow: () => this.stepPlay(),
@@ -8624,7 +8679,7 @@ class Component extends DCLogic {
           if (!s.drawFrom) return { drawFrom: { x: x, y: y } };
           const arrows = (s.arrows || []).concat([{
             x1: s.drawFrom.x + "%", y1: s.drawFrom.y + "%", x2: x + "%", y2: y + "%",
-            ph: tacPhase
+            ph: tacPhase, k: planKey
           }]);
           // Ve xong ma khong luu thi ke hoach bien mat ngay lan tai lai dau tien,
           // va ca doi khong ai thay -- ve cho ai xem.

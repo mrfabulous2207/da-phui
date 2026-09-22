@@ -9,9 +9,9 @@ const grab = (a, b) => { const i = src.indexOf(a); return src.slice(i, src.index
 // Indirect eval, so the grabbed source runs in its own global scope: a direct
 // eval shares this module's scope and its function declarations collide with
 // the names being destructured out of it.
-const EXPORTS = "({attState, attGoing, attCounts, ATT_LABEL, ATT_COLOR, ATT_BG, ATT_ORDER, ATT_RANK, fixtureTitle, kitLabelOf, eventFields, slotsForPos, venueOf, splitSides, SPLIT_LINES, phaseOf, forPhase, phaseIndex, ROLES, ROLES_OOP, rolesFor, roleShift, splitLegacyRole, slotKeeps, oopChoices, phaseBase, SIZE_FORMATIONS, FORMATION_SPEC, OOP_SPEC, DUTIES, roleDuty, INS_ROWS, MENTALITY_INS, insOf, tacticConflicts, shapeFor, fitCost, fitLabel, fitUnknown, bestFreeSlot, tallyBy, INSIGHT_MIN, phoneKey, pwSalt, teamListMerge, mergeMembers, adoptMembers, subLog, pitchPct, tweenPos, playHead, ratingOf, gradeOf, starsOf, playerDesc, ageFrom, ageWord, standoutKeys, DESC_POS, DESC_ADJ, parsePos, POS_ALIAS, posCycle, posToText, posCycleSay, cropBox, PHOTO_PX, EV_KINDS, matchDay, evTally, evLabel, evSort, playedIds, ratingView, ratedSquadAvg, starCount, starText, starGapText, ptGapText, ratedCount, ATTRS, seasonRecord, trophySort, clubTimeline, withYearMarks, trophyTally, trophyPlace, oppOf, TROPHY_PLACES, addTarget, debtChip, attrLevel, barValueAt, radarPoints, ratedTop, ratedAvg, posAvg, isKeeper, honourBoard, HONOURS, statCell, memSorted, matchEvSummary, memberMatchRows, scoreProblem, minuteProblem, moneyProblem, dayProblem, matchOrder, memberProblem, memberWarning, safeUrl, occHit, shortName, dmyKey, hurtInfo, calOkDmy, formSummary, readiness, readyTag, roleStars, starGlyphs, matchInsights, extraState, matchByDay, defaultRankBy, benchOf, nearestSlotIdx, restPenalty, sideCost, fitCostAt, SIDE_OF, hexBox, netWhy, debtSessions})";
+const EXPORTS = "({attState, attGoing, attCounts, ATT_LABEL, ATT_COLOR, ATT_BG, ATT_ORDER, ATT_RANK, fixtureTitle, kitLabelOf, eventFields, slotsForPos, venueOf, splitSides, SPLIT_LINES, phaseOf, forPhase, phaseIndex, ROLES, ROLES_OOP, rolesFor, roleShift, splitLegacyRole, slotKeeps, oopChoices, phaseBase, SIZE_FORMATIONS, FORMATION_SPEC, OOP_SPEC, DUTIES, roleDuty, INS_ROWS, MENTALITY_INS, insOf, tacticConflicts, shapeFor, fitCost, fitLabel, fitUnknown, bestFreeSlot, tallyBy, INSIGHT_MIN, phoneKey, pwSalt, teamListMerge, mergeMembers, adoptMembers, subLog, pitchPct, tweenPos, playHead, ratingOf, gradeOf, starsOf, playerDesc, ageFrom, ageWord, standoutKeys, DESC_POS, DESC_ADJ, parsePos, POS_ALIAS, posCycle, posToText, posCycleSay, cropBox, PHOTO_PX, EV_KINDS, matchDay, evTally, evLabel, evSort, playedIds, ratingView, ratedSquadAvg, starCount, starText, starGapText, ptGapText, ratedCount, ATTRS, seasonRecord, trophySort, clubTimeline, withYearMarks, trophyTally, trophyPlace, oppOf, TROPHY_PLACES, addTarget, debtChip, attrLevel, barValueAt, radarPoints, ratedTop, ratedAvg, posAvg, isKeeper, honourBoard, HONOURS, statCell, memSorted, matchEvSummary, memberMatchRows, scoreProblem, minuteProblem, moneyProblem, dayProblem, matchOrder, memberProblem, memberWarning, safeUrl, occHit, shortName, dmyKey, hurtInfo, calOkDmy, formSummary, readiness, readyTag, roleStars, starGlyphs, matchInsights, extraState, matchByDay, defaultRankBy, benchOf, nearestSlotIdx, restPenalty, sideCost, fitCostAt, SIDE_OF, hexBox, netWhy, debtSessions, planOf, forPlan, planIndex, stampPlans})";
 const M = (0, eval)(grab("const POS_CODES", "const FORMATIONS = {") + ";" + EXPORTS);
-const { attState, attGoing, attCounts, ATT_LABEL, ATT_COLOR, ATT_BG, ATT_ORDER, ATT_RANK, fixtureTitle, kitLabelOf, eventFields, slotsForPos, venueOf, splitSides, SPLIT_LINES, phaseOf, forPhase, phaseIndex, ROLES, ROLES_OOP, rolesFor, roleShift, splitLegacyRole, slotKeeps, oopChoices, phaseBase, SIZE_FORMATIONS, FORMATION_SPEC, OOP_SPEC, DUTIES, roleDuty, INS_ROWS, MENTALITY_INS, insOf, tacticConflicts, shapeFor, fitCost, fitLabel, fitUnknown, bestFreeSlot, tallyBy, INSIGHT_MIN, phoneKey, pwSalt, teamListMerge, mergeMembers, adoptMembers, subLog, pitchPct, tweenPos, playHead, ratingOf, gradeOf, starsOf, playerDesc, ageFrom, ageWord, standoutKeys, DESC_POS, DESC_ADJ, parsePos, POS_ALIAS, posCycle, posToText, posCycleSay, cropBox, PHOTO_PX, EV_KINDS, matchDay, evTally, evLabel, evSort, playedIds, ratingView, ratedSquadAvg, starCount, starText, starGapText, ptGapText, ratedCount, ATTRS, seasonRecord, trophySort, clubTimeline, withYearMarks, trophyTally, trophyPlace, oppOf, TROPHY_PLACES, addTarget, debtChip, attrLevel, barValueAt, radarPoints, ratedTop, ratedAvg, posAvg, isKeeper, honourBoard, HONOURS, statCell, memSorted, matchEvSummary, memberMatchRows, scoreProblem, minuteProblem, moneyProblem, dayProblem, matchOrder, memberProblem, memberWarning, safeUrl, occHit, shortName, dmyKey, hurtInfo, calOkDmy, formSummary, readiness, readyTag, roleStars, starGlyphs, matchInsights, extraState, matchByDay, defaultRankBy, benchOf, nearestSlotIdx, restPenalty, sideCost, fitCostAt, SIDE_OF, hexBox, netWhy, debtSessions } = M;
+const { attState, attGoing, attCounts, ATT_LABEL, ATT_COLOR, ATT_BG, ATT_ORDER, ATT_RANK, fixtureTitle, kitLabelOf, eventFields, slotsForPos, venueOf, splitSides, SPLIT_LINES, phaseOf, forPhase, phaseIndex, ROLES, ROLES_OOP, rolesFor, roleShift, splitLegacyRole, slotKeeps, oopChoices, phaseBase, SIZE_FORMATIONS, FORMATION_SPEC, OOP_SPEC, DUTIES, roleDuty, INS_ROWS, MENTALITY_INS, insOf, tacticConflicts, shapeFor, fitCost, fitLabel, fitUnknown, bestFreeSlot, tallyBy, INSIGHT_MIN, phoneKey, pwSalt, teamListMerge, mergeMembers, adoptMembers, subLog, pitchPct, tweenPos, playHead, ratingOf, gradeOf, starsOf, playerDesc, ageFrom, ageWord, standoutKeys, DESC_POS, DESC_ADJ, parsePos, POS_ALIAS, posCycle, posToText, posCycleSay, cropBox, PHOTO_PX, EV_KINDS, matchDay, evTally, evLabel, evSort, playedIds, ratingView, ratedSquadAvg, starCount, starText, starGapText, ptGapText, ratedCount, ATTRS, seasonRecord, trophySort, clubTimeline, withYearMarks, trophyTally, trophyPlace, oppOf, TROPHY_PLACES, addTarget, debtChip, attrLevel, barValueAt, radarPoints, ratedTop, ratedAvg, posAvg, isKeeper, honourBoard, HONOURS, statCell, memSorted, matchEvSummary, memberMatchRows, scoreProblem, minuteProblem, moneyProblem, dayProblem, matchOrder, memberProblem, memberWarning, safeUrl, occHit, shortName, dmyKey, hurtInfo, calOkDmy, formSummary, readiness, readyTag, roleStars, starGlyphs, matchInsights, extraState, matchByDay, defaultRankBy, benchOf, nearestSlotIdx, restPenalty, sideCost, fitCostAt, SIDE_OF, hexBox, netWhy, debtSessions, planOf, forPlan, planIndex, stampPlans } = M;
 
 let fails = 0, n = 0;
 const ok = (cond, msg) => { n++; if (!cond) { fails++; console.log("  FAIL " + msg); } };
@@ -1849,6 +1849,42 @@ eq(debtSessions(190000, -5), 0, "tien san am cung vay");
 eq(debtSessions(null, 95000), 0, "null khong nem loi");
 eq(debtSessions("190000", "95000"), 2, "chuoi so van doc duoc");
 eq(debtSessions(1000000, 95000), 10, "no nhieu thi dem dung nhieu");
+
+/* Ke hoach (buoc dung + mui ten) phai thuoc ve MOT buoi + MOT ben + MOT so o.
+   Truoc day chung la mang phang toan cuc nen tran nao cung thay bo cu. */
+const PL = [
+  { ph:"on",  k:"e1@2026-09-23#7", t:"A" },
+  { ph:"off", k:"e1@2026-09-23#7", t:"B" },
+  { ph:"on",  k:"e1@2026-09-23#7#B", t:"C" },
+  { ph:"on",  k:"e1@2026-09-30#7", t:"D" },
+  { ph:"on",  k:"e1@2026-09-23#5", t:"E" },
+  { ph:"on",  t:"F" }
+];
+eq(forPlan(PL, "on", "e1@2026-09-23#7").map(v => v.t).join(""), "A", "chi lay dung buoi, dung ben, dung pha");
+eq(forPlan(PL, "off", "e1@2026-09-23#7").map(v => v.t).join(""), "B", "pha mat bong tach rieng");
+eq(forPlan(PL, "on", "e1@2026-09-23#7#B").map(v => v.t).join(""), "C", "doi B khong an ke hoach cua doi A");
+eq(forPlan(PL, "on", "e1@2026-09-30#7").map(v => v.t).join(""), "D", "buoi khac thi ke hoach khac");
+eq(forPlan(PL, "on", "e1@2026-09-23#5").map(v => v.t).join(""), "E", "doi co san la doi bai toan -- so o nam trong khoa");
+eq(forPlan(PL, "on", "").map(v => v.t).join(""), "F", "ban ghi cu chua gan buoi nao");
+eq(forPlan(PL, "on", "khong-co-that").length, 0, "khoa la thi khong tra ve gi");
+eq(forPlan(null, "on", "x").length, 0, "mang rong khong nem loi");
+eq(planOf({}), "", "thieu k thi coi nhu chua gan");
+eq(planOf({ k: "" }), "", "chuoi rong van la chua gan");
+
+/* `planIndex` doi chi so trong danh sach DA LOC ra chi so trong mang day du --
+   xoa nham mot bo buoc cua buoi khac la mat viec cua nguoi khac. */
+eq(planIndex(PL, "on", "e1@2026-09-23#7", 0), 0, "phan tu dau cua ke hoach nay nam o 0");
+eq(planIndex(PL, "on", "e1@2026-09-30#7", 0), 3, "cua buoi khac nam o 3, khong phai 1");
+eq(planIndex(PL, "on", "e1@2026-09-23#7", 1), -1, "khong co phan tu thu hai thi tra -1");
+eq(planIndex(PL, "off", "e1@2026-09-23#7", 0), 1, "pha mat bong dem rieng");
+
+/* Di tru: ban ghi cu KHONG bi xoa, va da gan roi thi thoi dung vao. */
+const OLD = [{ ph:"on" }, { ph:"off" }];
+eq(stampPlans(OLD, "K").every(v => v.k === "K"), true, "ban ghi cu duoc gan vao ke hoach dang mo");
+eq(stampPlans(OLD, "K").length, OLD.length, "khong mat ban ghi nao");
+const DONE = [{ ph:"on", k:"K" }];
+eq(stampPlans(DONE, "K2"), DONE, "da gan roi thi tra chinh mang cu -- noi goi biet khong can ghi xuong");
+eq(stampPlans([{ ph:"on", k:"" }], "K")[0].k, "", "chuoi rong la mot lua chon co that, dung de len");
 
 eq(restPenalty({ tired: true, streak: 3 }), 7, "da 3 buoi lien thi bi tru 7");
 eq(restPenalty({ tired: true, streak: 5 }), 9, "da nhieu hon thi tru nang hon");
