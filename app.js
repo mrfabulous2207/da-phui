@@ -1558,6 +1558,22 @@ function netWhy(online) {
 }
 const netNow = () => netWhy(typeof navigator !== "undefined" ? navigator.onLine : true);
 
+/* Noi quy 05 cua doi mau co nua sau: "No qua 2 buoi thi tam dung dang ky cho
+   toi khi dong du." Cung la chu chu khong phai luat -- khong dong ma nao doc no.
+
+   Nhung KHONG ep cung: noi quy la o van ban MOI DOI TU SUA duoc (`team.rules`),
+   nen mot doi co the da viet lai thanh cau khac han. Va chan mot nguoi dang ky
+   da bong la quyet dinh cua DOI, khong phai cua app. Nen no nam sau mot cong
+   tac trong Cai dat doi, mac dinh TAT, va doi tu dat nguong bao nhieu buoi.
+
+   Tra ve so buoi dang no (lam tron xuong), de noi cho ra con so chu khong chi
+   noi "ban dang no". `fee` <= 0 thi khong chan duoc gi -- tra 0. */
+function debtSessions(owedAmount, fee) {
+  const a = parseFloat(owedAmount), f = parseFloat(fee);
+  if (!isFinite(a) || !isFinite(f) || f <= 0 || a <= 0) return 0;
+  return Math.floor(a / f);
+}
+
 function matchByDay(matches) {
   const out = {};
   (matches || []).forEach(g => {
@@ -3198,6 +3214,31 @@ class Component extends DCLogic {
   setAtt(memberId, value) {
     const key = this._occ;
     if (!key || key === "none") { this.setState({ copied: "Chưa có buổi nào trong lịch - thêm lịch trước đã." }); return; }
+    /* Cong tac nam o Cai dat doi, mac dinh TAT. Chi chan cu bam "nhan di" --
+       "chua chac" va "khong di" luon bam duoc, vi khong cho ai noi "toi khong
+       di" la vo ly. Admin van bam thay duoc (ho la nguoi di doi khoan no), chi
+       kem mot cau nhac. */
+    const meNow = this.state.auth ? (this.state.members || []).find(x => x.id === this.state.auth) : null;
+    const teamNow = (this.state.teams || []).find(t => t.id === (meNow || {}).teamId) || (this.state.teams || [])[0] || {};
+    if (value === "yes" && teamNow.blockDebtors) {
+      const feeNow = this.fee(teamNow);
+      const owed = (this.state.charges || [])
+        .filter(c => c && c.memberId === memberId && !c.paid)
+        .reduce((a, c) => a + (+c.amount || 0), 0)
+        + (+((this.state.members || []).find(x => x.id === memberId) || {}).owed || 0) * feeNow;
+      const nSess = debtSessions(owed, feeNow);
+      const lim = Math.max(1, parseInt(teamNow.debtLimit, 10) || 2);
+      if (nSess >= lim) {
+        const who = ((this.state.members || []).find(x => x.id === memberId) || {}).name || "Người này";
+        const isAdminNow = !!(meNow && meNow.role === "admin");
+        if (!isAdminNow) {
+          this.setState({ copied: who + " đang nợ " + this.money(owed) + " (" + nSess
+            + " buổi) — đội đặt mức tạm dừng đăng ký từ " + lim
+            + " buổi. Đóng quỹ rồi đăng ký lại nhé." });
+          return;
+        }
+      }
+    }
     this.setState(s => {
       const cur = { ...((s.attendByOcc || {})[key] || {}) };
       /* Noi quy 04 cua doi mau: "Bao vang truoc gio chot thi khong mat tien.
@@ -5245,6 +5286,17 @@ class Component extends DCLogic {
         if (!clean) { this.patchTeam(teamId, { matchFee: null }); return; }
         this.patchTeam(teamId, { matchFee: parseInt(clean, 10) });
         if (clean !== raw.trim()) this.setState({ copied: "Tiền sân chỉ gồm chữ số — đã bỏ ký tự khác." });
+      },
+      blockDebtors: !!team.blockDebtors,
+      blockOff: !team.blockDebtors,
+      blockLabel: team.blockDebtors ? "Đang bật" : "Đang tắt",
+      blockBg: team.blockDebtors ? "rgba(193,212,57,0.18)" : "rgba(255,255,255,0.06)",
+      blockFg: team.blockDebtors ? "#C1D439" : "rgba(250,250,255,0.7)",
+      toggleBlock: guard(() => this.patchTeam(teamId, { blockDebtors: !team.blockDebtors })),
+      debtLimitVal: String(Math.max(1, parseInt(team.debtLimit, 10) || 2)),
+      setDebtLimit: e => {
+        const n = parseInt(String(e.target.value).replace(/[^0-9]/g, ""), 10);
+        this.patchTeam(teamId, { debtLimit: isFinite(n) && n >= 1 ? n : 2 });
       },
       setLinkDrive: e => this.patchTeam(teamId, { linkDrive: e.target.value.trim() }),
       setLinkAlbum: e => this.patchTeam(teamId, { linkAlbum: e.target.value.trim() }),
