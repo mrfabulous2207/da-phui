@@ -2672,7 +2672,7 @@ class Component extends DCLogic {
     members: [],
     ledger: [],
     slotsByTeam: {}, picked: null, kitByTeam: {},
-    attendByOcc: {}, paidByOcc: {}, teamNameDraft: null, occ: "", menu: null, wide3: true, wide6: false, lineupView: "squad", teamView: "fund", matchKindByOcc: {}, slotOvr: {}, teamTab: "A", paneTab: "pitch", shapeTab: "shape", narrow: false, wide4: false, pickedSlot: null, demoOn: false, demoPhase: 0, drawMode: false, drawFrom: null, poolOpen: { yes: true, none: false, no: false }, tacticLib: {}, tacticSel: {}, tacticSlot: null, sizeAsk: null, ctx: null, tacticsByTeam: {}, closedOcc: {}, undo: null, memberView: "list", splitOpen: false, charges: [], splitByOcc: {}, benchByTeam: {}, slotsByOcc: {}, hiddenCols: {}, formation: "1-2-3-1", formOpen: false, settledAt: {}, settledTick: 0, waivedByOcc: {}, barOpen: false, nameMode: "both", tacPhase: "on", autoWhy: [], authMode: "login", pass2: "", notesOff: {}, door: "", netErr: "", dobInput: "", invite: "", pw: {}, pwh: {}, arrows: [], subs: [], foesOn: false, steps: [], stepI: 0, stepMode: false, playMs: null, akShow: false,
+    attendByOcc: {}, paidByOcc: {}, teamNameDraft: null, occ: "", menu: null, wide3: true, wide6: false, lineupView: "squad", teamView: "fund", matchKindByOcc: {}, slotOvr: {}, teamTab: "A", paneTab: "pitch", shapeTab: "shape", narrow: false, wide4: false, pickedSlot: null, demoOn: false, demoPhase: 0, drawMode: false, drawFrom: null, poolOpen: { yes: true, none: false, no: false }, tacticLib: {}, tacticSel: {}, tacticSlot: null, sizeAsk: null, ctx: null, tacticsByTeam: {}, closedOcc: {}, undo: null, memberView: "list", splitOpen: false, charges: [], splitByOcc: {}, benchByTeam: {}, slotsByOcc: {}, hiddenCols: {}, formation: "1-2-3-1", formOpen: false, settledAt: {}, settledTick: 0, waivedByOcc: {}, lateOffByOcc: {}, barOpen: false, nameMode: "both", tacPhase: "on", autoWhy: [], authMode: "login", pass2: "", notesOff: {}, door: "", netErr: "", dobInput: "", invite: "", pw: {}, pwh: {}, arrows: [], subs: [], foesOn: false, steps: [], stepI: 0, stepMode: false, playMs: null, akShow: false,
     teams: [], pending: null, joinCode: "", newTeam: "", nameInput: "", promoteId: "", evEditId: null, copied: "", lineupMsg: "", filter: "", q: "", sel: null, split: null, quickKey: "",
     // rankBy rong = chua ai chon cot; luc do `defaultRankBy` quyet dinh theo
     // du lieu that. De san "rating" o day thi ham do khong bao gio chay.
@@ -2877,7 +2877,7 @@ class Component extends DCLogic {
             const hasPw = !!((d.pwh || {})[id]) || !!((d.pw || {})[id]);
             return hasPw ? null : id;
           })(),
-          slotsByTeam: d.slotsByTeam || s.slotsByTeam, kitByTeam: d.kitByTeam || s.kitByTeam, attendByOcc: d.attendByOcc || s.attendByOcc, pw: d.pw || s.pw, benchByTeam: d.benchByTeam || s.benchByTeam, closedOcc: d.closedOcc || s.closedOcc, tacticsByTeam: d.tacticsByTeam || s.tacticsByTeam, tacticLib: d.tacticLib || s.tacticLib, tacticSel: d.tacticSel || s.tacticSel, charges: d.charges || s.charges, splitByOcc: d.splitByOcc || s.splitByOcc, slotsByOcc: d.slotsByOcc || s.slotsByOcc, matchKindByOcc: d.matchKindByOcc || s.matchKindByOcc, slotOvr: d.slotOvr || s.slotOvr, paidByOcc: d.paidByOcc || s.paidByOcc, sawCtx: !!d.sawCtx, notesOff: d.notesOff || s.notesOff, pwh: d.pwh || s.pwh, arrows: d.arrows || s.arrows, subs: d.subs || s.subs, steps: d.steps || s.steps, nameMode: d.nameMode || s.nameMode, captainByTeam: d.captainByTeam || s.captainByTeam, mentalityByTeam: d.mentalityByTeam || s.mentalityByTeam, teams: (d.teams || s.teams).map(t => {
+          slotsByTeam: d.slotsByTeam || s.slotsByTeam, kitByTeam: d.kitByTeam || s.kitByTeam, attendByOcc: d.attendByOcc || s.attendByOcc, pw: d.pw || s.pw, benchByTeam: d.benchByTeam || s.benchByTeam, closedOcc: d.closedOcc || s.closedOcc, tacticsByTeam: d.tacticsByTeam || s.tacticsByTeam, tacticLib: d.tacticLib || s.tacticLib, tacticSel: d.tacticSel || s.tacticSel, charges: d.charges || s.charges, splitByOcc: d.splitByOcc || s.splitByOcc, slotsByOcc: d.slotsByOcc || s.slotsByOcc, matchKindByOcc: d.matchKindByOcc || s.matchKindByOcc, slotOvr: d.slotOvr || s.slotOvr, paidByOcc: d.paidByOcc || s.paidByOcc, lateOffByOcc: d.lateOffByOcc || s.lateOffByOcc, sawCtx: !!d.sawCtx, notesOff: d.notesOff || s.notesOff, pwh: d.pwh || s.pwh, arrows: d.arrows || s.arrows, subs: d.subs || s.subs, steps: d.steps || s.steps, nameMode: d.nameMode || s.nameMode, captainByTeam: d.captainByTeam || s.captainByTeam, mentalityByTeam: d.mentalityByTeam || s.mentalityByTeam, teams: (d.teams || s.teams).map(t => {
             const seedT = SEED_TEAMS.find(x => x.id === t.id) || {};
             return { ...seedT, ...t, opening: t.opening != null ? t.opening : (seedT.opening || 0) };
           })
@@ -2911,7 +2911,7 @@ class Component extends DCLogic {
     if (!this._applyingRemote) this.cloudPush();
     try {
       localStorage.setItem(KEY, JSON.stringify({
-        members: s.members, ledger: s.ledger, slotsByTeam: s.slotsByTeam, kitByTeam: s.kitByTeam, attendByOcc: s.attendByOcc, benchByTeam: s.benchByTeam, slotsByOcc: s.slotsByOcc, matchKindByOcc: s.matchKindByOcc, paidByOcc: s.paidByOcc, waivedByOcc: s.waivedByOcc, slotOvr: s.slotOvr, closedOcc: s.closedOcc, tacticsByTeam: s.tacticsByTeam, tacticLib: s.tacticLib, tacticSel: s.tacticSel, charges: s.charges, splitByOcc: s.splitByOcc, pw: s.pw, captainByTeam: s.captainByTeam, mentalityByTeam: s.mentalityByTeam, teams: s.teams, matches: s.matches, trophies: s.trophies, ranks: s.ranks, events: s.events, sawCtx: s.sawCtx, notesOff: s.notesOff, pwh: s.pwh, arrows: s.arrows, subs: s.subs, steps: s.steps, nameMode: s.nameMode, auth: s.auth
+        members: s.members, ledger: s.ledger, slotsByTeam: s.slotsByTeam, kitByTeam: s.kitByTeam, attendByOcc: s.attendByOcc, benchByTeam: s.benchByTeam, slotsByOcc: s.slotsByOcc, matchKindByOcc: s.matchKindByOcc, paidByOcc: s.paidByOcc, waivedByOcc: s.waivedByOcc, lateOffByOcc: s.lateOffByOcc, slotOvr: s.slotOvr, closedOcc: s.closedOcc, tacticsByTeam: s.tacticsByTeam, tacticLib: s.tacticLib, tacticSel: s.tacticSel, charges: s.charges, splitByOcc: s.splitByOcc, pw: s.pw, captainByTeam: s.captainByTeam, mentalityByTeam: s.mentalityByTeam, teams: s.teams, matches: s.matches, trophies: s.trophies, ranks: s.ranks, events: s.events, sawCtx: s.sawCtx, notesOff: s.notesOff, pwh: s.pwh, arrows: s.arrows, subs: s.subs, steps: s.steps, nameMode: s.nameMode, auth: s.auth
       }));
       return true;
     } catch (e) {
@@ -3180,7 +3180,7 @@ class Component extends DCLogic {
   pruneOcc(s, eventId) {
     const mine = k => String(k).split("@")[0] === String(eventId);
     const out = {}, before = {};
-    ["attendByOcc", "paidByOcc", "slotsByOcc", "splitByOcc", "matchKindByOcc", "closedOcc", "slotOvr"].forEach(name => {
+    ["attendByOcc", "paidByOcc", "waivedByOcc", "lateOffByOcc", "slotsByOcc", "splitByOcc", "matchKindByOcc", "closedOcc", "slotOvr"].forEach(name => {
       const src = s[name] || {};
       const keys = Object.keys(src);
       // slotOvr is keyed "<occ>#<slot>" and slotsByOcc can carry a "#B" side
@@ -3200,15 +3200,36 @@ class Component extends DCLogic {
     if (!key || key === "none") { this.setState({ copied: "Chưa có buổi nào trong lịch - thêm lịch trước đã." }); return; }
     this.setState(s => {
       const cur = { ...((s.attendByOcc || {})[key] || {}) };
+      /* Noi quy 04 cua doi mau: "Bao vang truoc gio chot thi khong mat tien.
+         Bao sau gio chot hoac khong den van tinh du tien san." Cho toi truoc
+         dot nay do la CHU, khong phai luat: bam "Khong di" luc nao cung xoa
+         sach khoan tien san, ke ca sau khi bong da lan -- trong khi doi da tra
+         tien san roi.
+
+         Danh dau vao `lateOffByOcc` chu khong sua `attendByOcc`: diem danh phai
+         giu dung su that "nguoi nay khong di". Ai tinh tien thi doc them dau
+         nay. Admin van mien duoc bang nut "Mien" san co.
+
+         Chi danh dau khi TRUOC DO da nhan di -- khong nhan thi khong no gi. */
+      const wasGoing = attGoing(cur[memberId]);
+      const late = value === "no" && wasGoing
+        && this._occStart != null && Date.now() > this._occStart;
       cur[memberId] = value;
       const attendByOcc = { ...s.attendByOcc, [key]: cur };
-      this.persist({ attendByOcc });
+      let lateOffByOcc = s.lateOffByOcc;
+      if (late) {
+        lateOffByOcc = { ...(s.lateOffByOcc || {}),
+          [key]: { ...((s.lateOffByOcc || {})[key] || {}), [memberId]: 1 } };
+      }
+      this.persist({ attendByOcc, lateOffByOcc });
       // Một dòng một người, nên hai mươi người bấm cùng lúc không ai xoá ai.
       const m = this.cloudMeta();
       if (m && m.code) sbRpc("team_attend", { p_code: m.code, p_occ: String(key), p_member: String(memberId), p_value: value || "" })
         .then(() => this.setState({ netErr: "" }))
         .catch(() => this.setState({ netErr: "Điểm danh chưa lên được máy chủ. " + netNow() }));
-      return { attendByOcc };
+      const who = (s.members.find(x => x.id === memberId) || {}).name || "Người này";
+      return { attendByOcc, lateOffByOcc,
+        ...(late ? { copied: who + " báo vắng sau giờ đá — vẫn tính tiền sân theo nội quy. Ghi nhầm thì vào Quỹ · Ai còn nợ, bấm Xoá khoản." } : {}) };
     });
   }
 
@@ -3546,6 +3567,14 @@ class Component extends DCLogic {
       : (occNext ? occNext.key : "none");
     this._occ = curOcc;
     const curOccObj = OCC.find(o => o.key === curOcc) || null;
+    /* Gio bat dau cua buoi dang mo. `setAtt` can no de biet mot cu bam "Khong
+       di" la TRUOC hay SAU gio choi -- day la ranh gioi ma noi quy 04 noi toi,
+       va app chua tung dung no de lam gi. */
+    this._occStart = curOccObj ? (() => {
+      const t = curOccObj.e.time || "19:30";
+      return new Date(curOccObj.d.getFullYear(), curOccObj.d.getMonth(), curOccObj.d.getDate(),
+        parseInt(t.slice(0, 2), 10) || 19, parseInt(t.slice(3, 5), 10) || 30).getTime();
+    })() : null;
     const hasOcc = OCC.length > 0;
     const att = hasOcc ? ((st.attendByOcc || {})[curOcc] || {}) : {};
     this._att = att;
@@ -4045,7 +4074,11 @@ class Component extends DCLogic {
        khoan da thanh dong thi `waive` go thang dong do. */
     const waivedOcc = (st.waivedByOcc || {})[curOcc] || {};
     const isWaived = m => !!waivedOcc[m.id];
-    const debt = m => (+m.owed || 0) * fee + owe(m) + (hasOcc && att[m.id] === "yes" && !hasPaidOcc(m) && !isWaived(m) ? occFee : 0);
+    /* Mot nguoi "no tien san buoi nay" khi ho NHAN DI, hoac khi ho huy SAU gio da
+       (noi quy 04). Ca hai deu bi xoa boi "Da dong" va boi "Mien". */
+    const lateOff = (st.lateOffByOcc || {})[curOcc] || {};
+    const owesOcc = m => hasOcc && (att[m.id] === "yes" || !!lateOff[m.id]) && !hasPaidOcc(m) && !isWaived(m);
+    const debt = m => (+m.owed || 0) * fee + owe(m) + (owesOcc(m) ? occFee : 0);
     /* Tien san cua mot buoi chi thanh no khi buoi do duoc CHOT (ghi ket qua).
        Truoc do khong cho nao noi ra: sang hom sau mo app, app vao buoi sap toi,
        the "Ai con no" ghi "Chua ai no quy" -- dung luc doi truong can di doi tien
@@ -4591,7 +4624,13 @@ class Component extends DCLogic {
          thu, khong dong nao vao quy, va noi ra la da go bao nhieu cua ai. */
       waive: () => this.setState(s => {
         const rows = (s.charges || []).filter(c => c && c.teamId === teamId && c.memberId === m.id && !c.paid);
-        const liveFee = hasOcc && att[m.id] === "yes" && !hasPaidOcc(m) && !isWaived(m);
+        /* Dung CHUNG mot dinh nghia "no tien buoi nay" voi cho tinh no
+           (`owesOcc`). Truoc do cho nay tu kiem `att === "yes"`, nen nguoi huy
+           SAU gio da -- `att` la "no" nhung van bi tinh tien theo noi quy 04 --
+           roi vao khe: khoan hien tren man ma nut "Xoa khoan" bao "khong co
+           khoan nao chua thu de xoa". Mot khoan tien khong co duong go la te
+           hon ca khong tinh tien. */
+        const liveFee = owesOcc(m);
         if (!rows.length && !(+m.owed || 0) && !liveFee) return { copied: m.name + " không có khoản nào chưa thu để xoá." };
         if (!rows.length && !(+m.owed || 0) && liveFee) {
           const wv = { ...(s.waivedByOcc || {}), [this._occ]: { ...((s.waivedByOcc || {})[this._occ] || {}), [m.id]: true } };
@@ -7973,7 +8012,17 @@ class Component extends DCLogic {
         (s.charges || []).forEach(c => {
           if (c && c.teamId === teamId && (c.occ === curOcc || c.label === "Tiền sân " + dstr)) chargedIds[c.memberId] = 1;
         });
-        const toBill = sameDay ? goers.filter(mid => !chargedIds[mid]) : [];
+        /* Tinh tien KHAC dem tran da. `goers` la nhung nguoi THUC SU co mat --
+           no cong +1 tran vao ho so, nen nguoi huy muon khong duoc nam trong do.
+           Nhung ho van phai tra tien san (noi quy 04), nen danh sach tinh tien
+           la `goers` cong nhung nguoi mang dau huy-muon. Nguoi da duoc "Mien"
+           thi bo ra -- mien la mien tien, khong phai mien co mat. */
+        const lateIds = sameDay
+          ? Object.keys((s.lateOffByOcc || {})[curOcc] || {}).map(x => parseInt(x, 10)).filter(n => isFinite(n))
+          : [];
+        const waivedNow = (s.waivedByOcc || {})[curOcc] || {};
+        const billable = goers.concat(lateIds.filter(id => goers.indexOf(id) < 0));
+        const toBill = sameDay ? billable.filter(mid => !chargedIds[mid] && !waivedNow[mid]) : [];
         const charges = (s.charges || []).concat(toBill.map((mid, i) => ({
           teamId: teamId, id: id0 + 1 + i, memberId: mid, amount: occFee, occ: curOcc,
           label: "Tiền sân " + dstr, paid: hasPaidOcc({ id: mid })
@@ -8941,7 +8990,7 @@ class Component extends DCLogic {
   cloudBlob() {
     const s = this.state, o = {};
     ["members", "ledger", "teams", "matches", "trophies", "events", "ranks", "slotsByTeam", "slotsByOcc",
-     "kitByTeam", "benchByTeam", "matchKindByOcc", "paidByOcc", "waivedByOcc", "splitByOcc", "slotOvr",
+     "kitByTeam", "benchByTeam", "matchKindByOcc", "paidByOcc", "waivedByOcc", "lateOffByOcc", "splitByOcc", "slotOvr",
      "closedOcc", "tacticsByTeam", "tacticLib", "tacticSel", "charges", "captainByTeam",
      "mentalityByTeam", "nameMode", "arrows", "subs", "steps"].forEach(k => { o[k] = s[k]; });
     return o;
