@@ -82,8 +82,8 @@
     .fmmain { display:flex; flex-direction:column; padding-bottom:88px !important; }
     .fmovershell { flex:1 1 auto; min-height:0; display:flex; flex-direction:column; gap:12px; }
     .fmovershell > .fmscroll:first-child { flex:0 0 auto; }
-    .fmover { flex:1 1 auto; min-height:0; display:grid !important; grid-template-columns:minmax(0,1fr) minmax(0,368px) !important; grid-template-rows:minmax(0,1fr) !important; gap:12px; }
-    .fmover > * { min-height:0; grid-row:1 !important; overflow-y:auto; }
+    .fmover { flex:1 1 auto; min-height:0; display:grid !important; grid-template-columns:minmax(0,1fr) minmax(0,368px) !important; grid-template-rows:auto !important; gap:12px; overflow-y:auto; }
+    .fmover > * { min-height:0; grid-row:1 !important; overflow:visible; }
     .fmover > *:nth-child(1) { grid-column:1 !important; }
     .fmover > *:nth-child(2) { grid-column:2 !important; display:flex; flex-direction:column; gap:12px; }
     .fmover > * > * { flex:0 0 auto; }
@@ -1288,13 +1288,19 @@
 
               <div style="border-radius:12px; background:#161925; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.06); padding:20px">
                 <div style="display:flex; align-items:center; gap:8px; padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.1); flex-wrap:wrap">
-                  <span style="font-family:'Be Vietnam Pro', system-ui, sans-serif; font-weight:700; font-size:18px; letter-spacing:-0.02em; color:#D16BF4">Lịch {{ monthLabel }}</span>
+                  <span style="font-family:'Be Vietnam Pro', system-ui, sans-serif; font-weight:700; font-size:18px; letter-spacing:-0.02em; color:#D16BF4" onClick="{{ toggleLich }}" role="button" tabindex="0" title="Gập / mở lịch">Lịch {{ monthLabel }} {{ lichCaret }}</span>
+                  <sc-if value="{{ lichOpen }}" hint-placeholder-val="{{ true }}">
                   <div style="margin-left:auto; display:flex; align-items:center; gap:6px">
                     <div onClick="{{ prevMonth }}" aria-label="Tháng trước" style="cursor:pointer; width:44px; height:44px; border-radius:8px; display:grid; place-items:center; background:#1F2332; color:rgba(250,250,255,0.75)"><fm-icon name="IconLeft" size="16"></fm-icon></div>
                     <div onClick="{{ thisMonth }}" style="cursor:pointer; min-height:44px; display:flex; align-items:center; padding:0 12px; border-radius:8px; background:#1F2332; font-size:13px; color:rgba(250,250,255,0.75); white-space:nowrap">Hôm nay</div>
                     <div onClick="{{ nextMonth }}" aria-label="Tháng sau" style="cursor:pointer; width:44px; height:44px; border-radius:8px; display:grid; place-items:center; background:#1F2332; color:rgba(250,250,255,0.75)"><fm-icon name="IconRight" size="16"></fm-icon></div>
                   </div>
+                  </sc-if>
                 </div>
+                <sc-if value="{{ lichShut }}" hint-placeholder-val="{{ false }}">
+                  <div onClick="{{ toggleLich }}" style="cursor:pointer; margin-top:10px; font-size:13px; color:rgba(250,250,255,0.62)">{{ lichCount }}</div>
+                </sc-if>
+                <sc-if value="{{ lichOpen }}" hint-placeholder-val="{{ true }}">
                 <sc-if value="{{ showCalHint }}" hint-placeholder-val="{{ true }}">
                   <div class="onlywide" style="font-size:13px; color:rgba(250,250,255,0.62); margin-top:8px">chuột phải (hoặc bấm) vào ô ngày để thêm lịch nhanh</div>
                 </sc-if>
@@ -1353,6 +1359,7 @@
                   </sc-if>
                 </div>
 
+                </sc-if>
               </div>
 
             <!-- Bon tran gan nhat. Truoc do day cot trai bo trong 1508x252px: hai

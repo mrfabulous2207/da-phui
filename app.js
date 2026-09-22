@@ -2797,7 +2797,7 @@ class Component extends DCLogic {
     members: [],
     ledger: [],
     slotsByTeam: {}, picked: null, kitByTeam: {},
-    attendByOcc: {}, paidByOcc: {}, teamNameDraft: null, occ: "", menu: null, wide3: true, wide6: false, lineupView: "squad", teamView: "fund", matchKindByOcc: {}, slotOvr: {}, teamTab: "A", paneTab: "pitch", shapeTab: "shape", narrow: false, wide4: false, pickedSlot: null, demoOn: false, demoPhase: 0, drawMode: false, drawFrom: null, poolOpen: { yes: true, none: false, no: false }, tacticLib: {}, tacticSel: {}, tacticSlot: null, sizeAsk: null, ctx: null, tacticsByTeam: {}, closedOcc: {}, undo: null, memberView: "list", splitOpen: false, charges: [], splitByOcc: {}, benchByTeam: {}, slotsByOcc: {}, hiddenCols: {}, formation: "1-2-3-1", formOpen: false, settledAt: {}, settledTick: 0, waivedByOcc: {}, lateOffByOcc: {}, barOpen: false, nameMode: "both", tacPhase: "on", autoWhy: [], authMode: "login", pass2: "", notesOff: {}, door: "", netErr: "", dobInput: "", invite: "", pw: {}, pwh: {}, arrows: [], subs: [], foesOn: false, steps: [], stepI: 0, stepMode: false, playMs: null, sit: "", takerByPlan: {}, insAll: false, akShow: false,
+    attendByOcc: {}, paidByOcc: {}, teamNameDraft: null, occ: "", menu: null, wide3: true, wide6: false, lineupView: "squad", teamView: "fund", matchKindByOcc: {}, slotOvr: {}, teamTab: "A", paneTab: "pitch", shapeTab: "shape", narrow: false, wide4: false, pickedSlot: null, demoOn: false, demoPhase: 0, drawMode: false, drawFrom: null, poolOpen: { yes: true, none: false, no: false }, tacticLib: {}, tacticSel: {}, tacticSlot: null, sizeAsk: null, ctx: null, tacticsByTeam: {}, closedOcc: {}, undo: null, memberView: "list", splitOpen: false, charges: [], splitByOcc: {}, benchByTeam: {}, slotsByOcc: {}, hiddenCols: {}, formation: "1-2-3-1", formOpen: false, settledAt: {}, settledTick: 0, waivedByOcc: {}, lateOffByOcc: {}, barOpen: false, nameMode: "both", tacPhase: "on", autoWhy: [], authMode: "login", pass2: "", notesOff: {}, door: "", netErr: "", dobInput: "", invite: "", pw: {}, pwh: {}, arrows: [], subs: [], foesOn: false, steps: [], stepI: 0, stepMode: false, playMs: null, sit: "", takerByPlan: {}, insAll: false, lichOpen: false, akShow: false,
     teams: [], pending: null, joinCode: "", newTeam: "", nameInput: "", promoteId: "", evEditId: null, copied: "", lineupMsg: "", filter: "", q: "", sel: null, split: null, quickKey: "",
     // rankBy rong = chua ai chon cot; luc do `defaultRankBy` quyet dinh theo
     // du lieu that. De san "rating" o day thi ham do khong bao gio chay.
@@ -5550,6 +5550,15 @@ class Component extends DCLogic {
       clearQ: () => this.setState({ q: "" }),
       todayLabel: now.getDate() + "/" + (now.getMonth() + 1),
       nextDayLabel: nextDays.length ? DAY_VN[nextDays[0].d.getDay()] : "-",
+      /* Do duoc o 1440x900: lich thang la khoi TO NHAT cot rong (696px, 46% cot)
+         trong khi doi phui da LICH LAP HANG TUAN -- mo lich ra them buoi la viec
+         vai lan mot thang. Diem danh thi nguoc lai: 794px, khoi to nhat ca man,
+         ma bi nhet vao cot hep 368px.
+         Nen lich gap san. Khong bo di: mot cu bam la mo. */
+      lichOpen: !!st.lichOpen,
+      lichShut: !st.lichOpen,
+      lichCaret: st.lichOpen ? "▾" : "▸",
+      toggleLich: guard(() => this.setState(s2 => ({ lichOpen: !s2.lichOpen }))),
       monthLabel: "tháng " + (view.getMonth() + 1) + (view.getFullYear() !== now.getFullYear() ? "/" + view.getFullYear() : ""),
       prevMonth: () => this.setState(s => ({ monthOffset: s.monthOffset - 1 })),
       nextMonth: () => this.setState(s => ({ monthOffset: s.monthOffset + 1 })),
@@ -5717,6 +5726,13 @@ class Component extends DCLogic {
         return { events, evEditId: null, ev: { ...v, date: "", repeat: "none" }, copied: (s.evEditId ? "Đã sửa " : "Đã thêm ") + KINDS[v.kind].label.toLowerCase() + " ngày " + v.date + (v.repeat === "weekly" ? " (lặp hàng tuần)" : "") + "." };
       }),
       dayNames: ["T2", "T3", "T4", "T5", "T6", "T7", "CN"].map(l => ({ label: l })),
+      /* Gap lai thi ba nut chuyen thang thanh vo dung -- nhung mot con so thi
+         khong: no la ly do de mo ra. */
+      lichCount: (() => {
+        const n = calendar.reduce((a, c) => a + ((c && c.events) ? c.events.length : 0), 0);
+        return n ? (n + " buổi trong tháng này — bấm để mở")
+                 : "Chưa có buổi nào tháng này — bấm để thêm";
+      })(),
       calendar,
 
       // `filters` (dải chip lọc) không có trong bản thiết kế nào của màn này và
