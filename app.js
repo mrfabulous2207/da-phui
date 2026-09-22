@@ -912,6 +912,29 @@ function forPhase(list, phase) {
    Ban ghi cu khong co `k` thuoc ve "chua gan buoi nao" (`""`). Chung KHONG bi
    xoa: `stampPlans` gan chung vao ke hoach dang mo dung mot lan, tuc dung cho
    nguoi dung dang nhin thay chung hom nay. */
+/* Bong chet. Doi phui an va thua phan lon o day, ma app khong co mot dong nao
+   ve no -- do la lo to nhat cua tang chien thuat.
+
+   Khong dung them mot he thong moi: MOT TINH HUONG CO DINH CHINH LA MOT BUOC
+   DUNG CO TEN. `steps` da luu {pos, ph, k} va `arrows` da loc theo `k`, nen chi
+   can nhet tinh huong vao khoa la toan bo may luu / ve / phat lai dung lai duoc
+   nguyen. Khoa la chuoi mo, khong cho nao tach no ra.
+
+   Chuoi rong = chay tran, de ban ghi cu khong phai di tru. */
+const SITUATIONS = [
+  ["",   "Chạy trận",      "Bố trí và chỉ đạo khi bóng lăn."],
+  ["ca", "Phạt góc ta",    "Ai đá, ai đứng cột gần, ai chờ bóng hai, ai ở lại chặn phản công."],
+  ["cd", "Phạt góc đối", "Ai kèm người, ai đứng cột, ai đứng ngoài vòng cấm."],
+  ["fa", "Đá phạt ta",  "Ai đá, ai chạy chỗ, ai lùi về chặn phản công."],
+  ["fd", "Đá phạt đối", "Hàng rào mấy người, ai kèm ai, ai đứng bắt bóng hai."]
+];
+function sitOk(k) { return SITUATIONS.some(x => x[0] === k) ? k : ""; }
+function sitLabel(k) { const f = SITUATIONS.find(x => x[0] === sitOk(k)); return f ? f[1] : ""; }
+function sitNote(k) { const f = SITUATIONS.find(x => x[0] === sitOk(k)); return f ? f[2] : ""; }
+// Khoa ke hoach = nen (buoi + ben + so o) cong tinh huong. Chay tran khong co
+// duoi, nen moi ban ghi da luu tu truoc van thuoc ve chay tran.
+function planKeyOf(base, sit) { const k = sitOk(sit); return k ? (base + "|" + k) : base; }
+
 function planOf(v) { return (v && typeof v.k === "string") ? v.k : ""; }
 function forPlan(list, phase, key) {
   const ph = phase === "off" ? "off" : "on";
@@ -2725,7 +2748,7 @@ class Component extends DCLogic {
     members: [],
     ledger: [],
     slotsByTeam: {}, picked: null, kitByTeam: {},
-    attendByOcc: {}, paidByOcc: {}, teamNameDraft: null, occ: "", menu: null, wide3: true, wide6: false, lineupView: "squad", teamView: "fund", matchKindByOcc: {}, slotOvr: {}, teamTab: "A", paneTab: "pitch", shapeTab: "shape", narrow: false, wide4: false, pickedSlot: null, demoOn: false, demoPhase: 0, drawMode: false, drawFrom: null, poolOpen: { yes: true, none: false, no: false }, tacticLib: {}, tacticSel: {}, tacticSlot: null, sizeAsk: null, ctx: null, tacticsByTeam: {}, closedOcc: {}, undo: null, memberView: "list", splitOpen: false, charges: [], splitByOcc: {}, benchByTeam: {}, slotsByOcc: {}, hiddenCols: {}, formation: "1-2-3-1", formOpen: false, settledAt: {}, settledTick: 0, waivedByOcc: {}, lateOffByOcc: {}, barOpen: false, nameMode: "both", tacPhase: "on", autoWhy: [], authMode: "login", pass2: "", notesOff: {}, door: "", netErr: "", dobInput: "", invite: "", pw: {}, pwh: {}, arrows: [], subs: [], foesOn: false, steps: [], stepI: 0, stepMode: false, playMs: null, akShow: false,
+    attendByOcc: {}, paidByOcc: {}, teamNameDraft: null, occ: "", menu: null, wide3: true, wide6: false, lineupView: "squad", teamView: "fund", matchKindByOcc: {}, slotOvr: {}, teamTab: "A", paneTab: "pitch", shapeTab: "shape", narrow: false, wide4: false, pickedSlot: null, demoOn: false, demoPhase: 0, drawMode: false, drawFrom: null, poolOpen: { yes: true, none: false, no: false }, tacticLib: {}, tacticSel: {}, tacticSlot: null, sizeAsk: null, ctx: null, tacticsByTeam: {}, closedOcc: {}, undo: null, memberView: "list", splitOpen: false, charges: [], splitByOcc: {}, benchByTeam: {}, slotsByOcc: {}, hiddenCols: {}, formation: "1-2-3-1", formOpen: false, settledAt: {}, settledTick: 0, waivedByOcc: {}, lateOffByOcc: {}, barOpen: false, nameMode: "both", tacPhase: "on", autoWhy: [], authMode: "login", pass2: "", notesOff: {}, door: "", netErr: "", dobInput: "", invite: "", pw: {}, pwh: {}, arrows: [], subs: [], foesOn: false, steps: [], stepI: 0, stepMode: false, playMs: null, sit: "", takerByPlan: {}, akShow: false,
     teams: [], pending: null, joinCode: "", newTeam: "", nameInput: "", promoteId: "", evEditId: null, copied: "", lineupMsg: "", filter: "", q: "", sel: null, split: null, quickKey: "",
     // rankBy rong = chua ai chon cot; luc do `defaultRankBy` quyet dinh theo
     // du lieu that. De san "rating" o day thi ham do khong bao gio chay.
@@ -2930,7 +2953,7 @@ class Component extends DCLogic {
             const hasPw = !!((d.pwh || {})[id]) || !!((d.pw || {})[id]);
             return hasPw ? null : id;
           })(),
-          slotsByTeam: d.slotsByTeam || s.slotsByTeam, kitByTeam: d.kitByTeam || s.kitByTeam, attendByOcc: d.attendByOcc || s.attendByOcc, pw: d.pw || s.pw, benchByTeam: d.benchByTeam || s.benchByTeam, closedOcc: d.closedOcc || s.closedOcc, tacticsByTeam: d.tacticsByTeam || s.tacticsByTeam, tacticLib: d.tacticLib || s.tacticLib, tacticSel: d.tacticSel || s.tacticSel, charges: d.charges || s.charges, splitByOcc: d.splitByOcc || s.splitByOcc, slotsByOcc: d.slotsByOcc || s.slotsByOcc, matchKindByOcc: d.matchKindByOcc || s.matchKindByOcc, slotOvr: d.slotOvr || s.slotOvr, paidByOcc: d.paidByOcc || s.paidByOcc, lateOffByOcc: d.lateOffByOcc || s.lateOffByOcc, sawCtx: !!d.sawCtx, notesOff: d.notesOff || s.notesOff, pwh: d.pwh || s.pwh, arrows: d.arrows || s.arrows, subs: d.subs || s.subs, steps: d.steps || s.steps, nameMode: d.nameMode || s.nameMode, captainByTeam: d.captainByTeam || s.captainByTeam, mentalityByTeam: d.mentalityByTeam || s.mentalityByTeam, teams: (d.teams || s.teams).map(t => {
+          slotsByTeam: d.slotsByTeam || s.slotsByTeam, kitByTeam: d.kitByTeam || s.kitByTeam, attendByOcc: d.attendByOcc || s.attendByOcc, pw: d.pw || s.pw, benchByTeam: d.benchByTeam || s.benchByTeam, closedOcc: d.closedOcc || s.closedOcc, tacticsByTeam: d.tacticsByTeam || s.tacticsByTeam, tacticLib: d.tacticLib || s.tacticLib, tacticSel: d.tacticSel || s.tacticSel, charges: d.charges || s.charges, splitByOcc: d.splitByOcc || s.splitByOcc, slotsByOcc: d.slotsByOcc || s.slotsByOcc, matchKindByOcc: d.matchKindByOcc || s.matchKindByOcc, slotOvr: d.slotOvr || s.slotOvr, paidByOcc: d.paidByOcc || s.paidByOcc, lateOffByOcc: d.lateOffByOcc || s.lateOffByOcc, takerByPlan: d.takerByPlan || s.takerByPlan, sawCtx: !!d.sawCtx, notesOff: d.notesOff || s.notesOff, pwh: d.pwh || s.pwh, arrows: d.arrows || s.arrows, subs: d.subs || s.subs, steps: d.steps || s.steps, nameMode: d.nameMode || s.nameMode, captainByTeam: d.captainByTeam || s.captainByTeam, mentalityByTeam: d.mentalityByTeam || s.mentalityByTeam, teams: (d.teams || s.teams).map(t => {
             const seedT = SEED_TEAMS.find(x => x.id === t.id) || {};
             return { ...seedT, ...t, opening: t.opening != null ? t.opening : (seedT.opening || 0) };
           })
@@ -2964,7 +2987,7 @@ class Component extends DCLogic {
     if (!this._applyingRemote) this.cloudPush();
     try {
       localStorage.setItem(KEY, JSON.stringify({
-        members: s.members, ledger: s.ledger, slotsByTeam: s.slotsByTeam, kitByTeam: s.kitByTeam, attendByOcc: s.attendByOcc, benchByTeam: s.benchByTeam, slotsByOcc: s.slotsByOcc, matchKindByOcc: s.matchKindByOcc, paidByOcc: s.paidByOcc, waivedByOcc: s.waivedByOcc, lateOffByOcc: s.lateOffByOcc, slotOvr: s.slotOvr, closedOcc: s.closedOcc, tacticsByTeam: s.tacticsByTeam, tacticLib: s.tacticLib, tacticSel: s.tacticSel, charges: s.charges, splitByOcc: s.splitByOcc, pw: s.pw, captainByTeam: s.captainByTeam, mentalityByTeam: s.mentalityByTeam, teams: s.teams, matches: s.matches, trophies: s.trophies, ranks: s.ranks, events: s.events, sawCtx: s.sawCtx, notesOff: s.notesOff, pwh: s.pwh, arrows: s.arrows, subs: s.subs, steps: s.steps, nameMode: s.nameMode, auth: s.auth
+        members: s.members, ledger: s.ledger, slotsByTeam: s.slotsByTeam, kitByTeam: s.kitByTeam, attendByOcc: s.attendByOcc, benchByTeam: s.benchByTeam, slotsByOcc: s.slotsByOcc, matchKindByOcc: s.matchKindByOcc, paidByOcc: s.paidByOcc, waivedByOcc: s.waivedByOcc, lateOffByOcc: s.lateOffByOcc, takerByPlan: s.takerByPlan, slotOvr: s.slotOvr, closedOcc: s.closedOcc, tacticsByTeam: s.tacticsByTeam, tacticLib: s.tacticLib, tacticSel: s.tacticSel, charges: s.charges, splitByOcc: s.splitByOcc, pw: s.pw, captainByTeam: s.captainByTeam, mentalityByTeam: s.mentalityByTeam, teams: s.teams, matches: s.matches, trophies: s.trophies, ranks: s.ranks, events: s.events, sawCtx: s.sawCtx, notesOff: s.notesOff, pwh: s.pwh, arrows: s.arrows, subs: s.subs, steps: s.steps, nameMode: s.nameMode, auth: s.auth
       }));
       return true;
     } catch (e) {
@@ -3693,18 +3716,20 @@ class Component extends DCLogic {
     // occupying invisible slots at another.
     this._slotCount = SLOT_ROLES.length;
     /* Khoa ke hoach: buoi + ben + so o. `steps`/`arrows` loc theo no. */
-    const planKey = slotKey + "#" + SLOT_ROLES.length;
+    const planBase = slotKey + "#" + SLOT_ROLES.length;
+    const sit = sitOk(st.sit);
+    const planKey = planKeyOf(planBase, sit);
     this._planKey = planKey;
     /* Ban ghi cu (ve tu truoc khi co khoa) khong bi xoa: gan chung vao ke hoach
        DANG MO -- dung cho nguoi dung dang nhin thay chung hom nay. Chay dung mot
        lan vi sau khi gan thi khong con ban ghi nao thieu `k`. Khong goi
        `setState` trong luc dang render: hoan sang nhip sau. */
     if (!this._stamped) {
-      const a0 = stampPlans(st.arrows, planKey), s0 = stampPlans(st.steps, planKey);
+      const a0 = stampPlans(st.arrows, planBase), s0 = stampPlans(st.steps, planBase);
       if (a0 !== st.arrows || s0 !== st.steps) {
         this._stamped = true;
         setTimeout(() => this.setState(s2 => {
-          const out = { arrows: stampPlans(s2.arrows, planKey), steps: stampPlans(s2.steps, planKey) };
+          const out = { arrows: stampPlans(s2.arrows, planBase), steps: stampPlans(s2.steps, planBase) };
           this.persist(out);
           return out;
         }), 0);
@@ -8569,6 +8594,38 @@ class Component extends DCLogic {
       demoPhaseNote: this.noteOf(!st.demoOn
         ? "Bấm Chạy thử để xem khối đội hình dâng lên / lùi về theo chỉ đạo đang đặt."
         : (st.demoPhase ? "Pha có bóng: cả khối dâng theo mức Dâng cao." : "Pha mất bóng: lùi về, áp sát theo mức đã đặt.")),
+      /* Bong chet dung chung san, chung buoc dung, chung mui ten voi chay tran
+         -- chi khac cai duoi trong khoa ke hoach. Doi tinh huong la doi ca ke
+         hoach dang xem, nen phai tat che do ve va ve bang 0 keo phat lai. */
+      sitList: SITUATIONS.map(x => ({
+        label: x[1],
+        on: sitOk(st.sit) === x[0],
+        bg: sitOk(st.sit) === x[0] ? "rgba(104,33,220,0.35)" : "#1F2332",
+        fg: sitOk(st.sit) === x[0] ? "#FAFAFF" : "rgba(250,250,255,0.7)",
+        line: sitOk(st.sit) === x[0] ? "rgba(177,129,255,0.6)" : "rgba(255,255,255,0.09)",
+        click: guard(() => this.setState({ sit: x[0], stepI: 0, playMs: null, drawMode: false, drawFrom: null }))
+      })),
+      sitNow: sitLabel(st.sit),
+      sitHint: sitNote(st.sit),
+      isSetPiece: sitOk(st.sit) !== "",
+      /* Nguoi da qua bong chet la thong tin rieng cua TUNG tinh huong: nguoi da
+         phat goc ben trai khong nhat thiet la nguoi da phat truc tiep. */
+      takerOpts: [{ v: "", label: "— chưa chọn —", sel: !((st.takerByPlan || {})[planKey]) }]
+        .concat(active.map(m => ({ v: String(m.id), label: (m.num ? "#" + m.num + " " : "") + m.name,
+          sel: String((st.takerByPlan || {})[planKey] || "") === String(m.id) }))),
+      takerVal: String((st.takerByPlan || {})[planKey] || ""),
+      takerName: (() => {
+        const id = (st.takerByPlan || {})[planKey];
+        const m = id ? byId(id) : null;
+        return m ? ((m.num ? "#" + m.num + " " : "") + m.name) : "chưa chọn";
+      })(),
+      setTaker: e => this.setState(s2 => {
+        const v = e.target.value;
+        const takerByPlan = { ...(s2.takerByPlan || {}) };
+        if (v) takerByPlan[planKey] = parseInt(v, 10); else delete takerByPlan[planKey];
+        this.persist({ takerByPlan });
+        return { takerByPlan };
+      }),
       toggleDraw: guard(() => this.setState(s => ({ drawMode: !s.drawMode, drawFrom: null }))),
       drawLabel: st.drawMode ? "Đang vẽ" : "Vẽ mũi tên",
       drawBg: st.drawMode ? "rgba(104,33,220,0.35)" : "#1F2332",
@@ -9097,7 +9154,7 @@ class Component extends DCLogic {
   cloudBlob() {
     const s = this.state, o = {};
     ["members", "ledger", "teams", "matches", "trophies", "events", "ranks", "slotsByTeam", "slotsByOcc",
-     "kitByTeam", "benchByTeam", "matchKindByOcc", "paidByOcc", "waivedByOcc", "lateOffByOcc", "splitByOcc", "slotOvr",
+     "kitByTeam", "benchByTeam", "matchKindByOcc", "paidByOcc", "waivedByOcc", "lateOffByOcc", "takerByPlan", "splitByOcc", "slotOvr",
      "closedOcc", "tacticsByTeam", "tacticLib", "tacticSel", "charges", "captainByTeam",
      "mentalityByTeam", "nameMode", "arrows", "subs", "steps"].forEach(k => { o[k] = s[k]; });
     return o;
