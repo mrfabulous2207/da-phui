@@ -3379,11 +3379,30 @@ class Component extends DCLogic {
   }
 
   // Xoá hẳn mọi thứ app giữ trên máy này. Không hoàn tác được, nên hỏi trước.
+  /* "Xoa sach" truoc day chi xoa `dpfm-v3`. `dpfm-cloud` (mang CHIA SUA) va
+     `dpfm-teams` (danh sach doi, moi doi kem chia) o lai nguyen ven -- da do:
+     sau khi bam Xoa sach, chia sua van con tren may. Hai hau qua nguoc nhau va
+     deu xau: dua may cho nguoi khac thi ho van sua duoc doi cua minh; va nhip
+     keo 8 giay van keo doi ve, nen nut nay trong nhu khong an gi.
+     Nay xoa ca ba. Va vi chia sua may chu KHONG dua lai lan thu hai, cau hoi
+     phai noi ro dieu do truoc khi nguoi ta bam. */
   wipeAll() {
+    const NL = String.fromCharCode(10);
+    const hasKey = !!(this.cloudMeta() || {}).adminKey;
     if (typeof confirm === "function" && !confirm(
-      "Xoá sạch mọi dữ liệu của app trên máy này?" + String.fromCharCode(10) + String.fromCharCode(10) +
-      "Mất thành viên, quỹ, lịch, đội hình và mật khẩu. Không hoàn tác được.")) return;
-    try { localStorage.removeItem(KEY); localStorage.removeItem(KEY + "-loi"); } catch (e) {}
+      "Xoá sạch mọi dữ liệu của app trên máy này?" + NL + NL +
+      "Mất thành viên, quỹ, lịch, đội hình, mật khẩu và danh sách đội của máy này." + NL +
+      (hasKey
+        ? ("MẤT LUÔN CHÌA SỬA ĐỘI đang giữ trên máy. Máy chủ KHÔNG đưa lại chìa lần thứ hai, nên không còn máy nào sửa được đội nữa." + NL +
+           "Tải bản dự phòng trước đi — trong Cài đặt đội." + NL)
+        : "") +
+      NL + "Không hoàn tác được.")) return;
+    try {
+      localStorage.removeItem(KEY);
+      localStorage.removeItem(KEY + "-loi");
+      localStorage.removeItem(CLOUD_KEY);
+      localStorage.removeItem("dpfm-teams");
+    } catch (e) {}
     if (typeof location !== "undefined") location.reload();
   }
 
