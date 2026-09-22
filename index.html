@@ -63,6 +63,32 @@
      la chieu rong CUA COT chu khong phai cua khung, nen tren 375px no van chia
      hai cot 161px va cat chu 80 cho. Duoi 560px ep mot cot -- mot cai the doc
      duoc quan trong hon hai cai the chat chua duoc gi. */
+  /* ---- THE DOC ----------------------------------------------------------
+     Cung mot markup, chi doi `data-tall`. Lay BO CUC cua the bong (ty le doc,
+     anh chiem cho, cot trai diem/vi tri/logo, dai ten, sau chi so 2x3) chu
+     KHONG lay nhan dien cua FIFA -- kho nay cong khai, va hinh khien vang do
+     la cua ho.
+     Bon o TRAN/BAN/K.TAO/HAY NHAT va chip no quy VAN GIU: the FIFA khong co
+     cho cho chung, nhung doi truong phui mo man nay chinh la de xem chung. */
+  .pc-grid[data-tall="1"] { grid-template-columns:repeat(auto-fill, minmax(min(212px,100%), 1fr)); }
+  .pcard[data-tall="1"] { padding:12px 13px 11px; gap:9px; }
+  .pcard[data-tall="1"] .pc-top { flex-direction:row; align-items:flex-start; gap:8px; min-height:150px; }
+  .pcard[data-tall="1"] .pc-idcol { min-width:44px; justify-content:flex-start; gap:3px; }
+  .pcard[data-tall="1"] .pc-rate { font-size:44px; }
+  .pcard[data-tall="1"] .pc-crest { display:block; width:30px; height:30px; margin-top:7px; object-fit:contain; opacity:0.92; }
+  /* Anh chiem cho — day la khoang cach lon nhat so voi the that: truoc no chi 56px. */
+  /* Anh o the that rong hon cao (FIFA de 480x405). De vuong thi the cao vong
+     len ty le 0,58 va day sau chi so xuong duoi tam nhin. */
+  .pcard[data-tall="1"] .pc-photo { margin:0; width:100%; height:auto; aspect-ratio:4/3; min-height:0; border-radius:10px; }
+  .pcard[data-tall="1"] .pc-face { margin:0; flex:1 1 auto; display:grid; place-items:center; font-size:92px; opacity:0.16; }
+  .pcard[data-tall="1"] .pc-nm { font-size:19px; text-align:center; letter-spacing:-0.01em; }
+  .pcard[data-tall="1"] .pc-line, .pcard[data-tall="1"] .pc-alt { text-align:center; }
+  /* Sau chi so xep 2 cot x 3 hang, dung nhip the bong. */
+  .pcard[data-tall="1"] .pc-faces { grid-template-columns:repeat(2, minmax(0,1fr)); gap:7px 12px; }
+  .pcard[data-tall="1"] .pc-stats { grid-template-columns:repeat(4, 1fr); gap:4px; }
+  .pcard[data-tall="1"] .pc-sv { font-size:14px; }
+  .pc-crest { display:none; }
+
   .pc-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(264px, 1fr)); gap:12px; min-width:0; }
   @media (max-width:560px) { .pc-grid { grid-template-columns:minmax(0, 1fr); } }
   .pc-tier { font-size:13px; font-weight:700; letter-spacing:0.05em; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
@@ -2866,6 +2892,10 @@
             </div>
 
             <sc-if value="{{ isCards }}" hint-placeholder-val="{{ false }}">
+              <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap; margin-bottom:12px">
+                <span style="flex:1; min-width:0; font-size:13px; color:rgba(250,250,255,0.62); line-height:1.5">Thẻ dọc để khoe và gửi vào nhóm chat · thẻ gọn để quản lý. Cùng một dữ liệu.</span>
+                <span onClick="{{ toggleCardTall }}" role="button" tabindex="0" style="cursor:pointer; flex-shrink:0; display:flex; align-items:center; min-height:38px; padding:0 15px; border-radius:8px; box-shadow:inset 0 0 0 1px rgba(255,255,255,0.14); font-size:13px; font-weight:700; white-space:nowrap; color:rgba(250,250,255,0.82)">{{ cardTallLabel }}</span>
+              </div>
               <div class="pcgroups" style="display:flex; flex-direction:column; gap:22px">
                 <sc-for list="{{ cardGroups }}" as="cg" hint-placeholder-count="5">
                   <div>
@@ -2878,9 +2908,9 @@
                     <!-- min(264px, 100%): tren dien thoai mot cot 264px cung khong vua, va lien
                          voi `auto-fill` no khong tu co lai -- luoi day the ra ngoai man 88px.
                          Do la loi cu cua CSS grid, khong phai loi cua the. -->
-                    <div class="pc-grid">
+                    <div class="pc-grid" data-tall="{{ cardTallAttr }}">
                       <sc-for list="{{ cg.list }}" as="pc" hint-placeholder-count="6">
-                        <div class="pcard" onClick="{{ pc.open }}" onContextMenu="{{ pc.menu }}" onPointerDown="{{ pc.pressStart }}" onPointerUp="{{ pc.pressEnd }}" onPointerCancel="{{ pc.pressEnd }}" style="cursor:pointer; display:flex; flex-direction:column; gap:11px; padding:14px 15px 12px; border-radius:16px; background:{{ pc.tierBg }}; box-shadow:inset 0 0 0 1px {{ pc.tierEdge }}, 0 10px 26px rgba(0,0,0,0.35), inset 0 34px 60px -34px {{ pc.tierGlow }}">
+                        <div class="pcard" data-tall="{{ cardTallAttr }}" onClick="{{ pc.open }}" onContextMenu="{{ pc.menu }}" onPointerDown="{{ pc.pressStart }}" onPointerUp="{{ pc.pressEnd }}" onPointerCancel="{{ pc.pressEnd }}" style="cursor:pointer; display:flex; flex-direction:column; gap:11px; padding:14px 15px 12px; border-radius:16px; background:{{ pc.tierBg }}; box-shadow:inset 0 0 0 1px {{ pc.tierEdge }}, 0 10px 26px rgba(0,0,0,0.35), inset 0 34px 60px -34px {{ pc.tierGlow }}">
 
                           <!-- Cot trai: diem lon, vi tri, so ao -- dung nhip cua mot the bong.
                                Diem nam o goc tren trai vi do la thu duy nhat nguoi ta doc truoc. -->
@@ -2889,6 +2919,9 @@
                               <span class="pc-rate" style="color:{{ pc.tierInk }}">{{ pc.ratingBig }}</span>
                               <span class="pc-pos" style="color:{{ pc.posColor }}">{{ pc.pos }}</span>
                               <span class="pc-num">{{ pc.num }}</span>
+                              <sc-if value="{{ hasLogo }}" hint-placeholder-val="{{ false }}">
+                                <img class="pc-crest" src="{{ teamLogo }}" alt="">
+                              </sc-if>
                             </div>
                             <sc-if value="{{ pc.hasPhoto }}" hint-placeholder-val="{{ false }}">
                               <img class="pc-photo" src="{{ pc.photo }}" alt="" style="border-color:{{ pc.tierEdge }}">

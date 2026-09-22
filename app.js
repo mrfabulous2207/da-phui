@@ -2797,7 +2797,7 @@ class Component extends DCLogic {
     members: [],
     ledger: [],
     slotsByTeam: {}, picked: null, kitByTeam: {},
-    attendByOcc: {}, paidByOcc: {}, teamNameDraft: null, occ: "", menu: null, wide3: true, wide6: false, lineupView: "squad", teamView: "fund", matchKindByOcc: {}, slotOvr: {}, teamTab: "A", paneTab: "pitch", shapeTab: "shape", narrow: false, wide4: false, pickedSlot: null, demoOn: false, demoPhase: 0, drawMode: false, drawFrom: null, poolOpen: { yes: true, none: false, no: false }, tacticLib: {}, tacticSel: {}, tacticSlot: null, sizeAsk: null, ctx: null, tacticsByTeam: {}, closedOcc: {}, undo: null, memberView: "list", splitOpen: false, charges: [], splitByOcc: {}, benchByTeam: {}, slotsByOcc: {}, hiddenCols: {}, formation: "1-2-3-1", formOpen: false, settledAt: {}, settledTick: 0, waivedByOcc: {}, lateOffByOcc: {}, barOpen: false, nameMode: "both", tacPhase: "on", autoWhy: [], authMode: "login", pass2: "", notesOff: {}, door: "", netErr: "", dobInput: "", invite: "", pw: {}, pwh: {}, arrows: [], subs: [], foesOn: false, steps: [], stepI: 0, stepMode: false, playMs: null, sit: "", takerByPlan: {}, insAll: false, lichOpen: false, akShow: false,
+    attendByOcc: {}, paidByOcc: {}, teamNameDraft: null, occ: "", menu: null, wide3: true, wide6: false, lineupView: "squad", teamView: "fund", matchKindByOcc: {}, slotOvr: {}, teamTab: "A", paneTab: "pitch", shapeTab: "shape", narrow: false, wide4: false, pickedSlot: null, demoOn: false, demoPhase: 0, drawMode: false, drawFrom: null, poolOpen: { yes: true, none: false, no: false }, tacticLib: {}, tacticSel: {}, tacticSlot: null, sizeAsk: null, ctx: null, tacticsByTeam: {}, closedOcc: {}, undo: null, memberView: "list", splitOpen: false, charges: [], splitByOcc: {}, benchByTeam: {}, slotsByOcc: {}, hiddenCols: {}, formation: "1-2-3-1", formOpen: false, settledAt: {}, settledTick: 0, waivedByOcc: {}, lateOffByOcc: {}, barOpen: false, nameMode: "both", tacPhase: "on", autoWhy: [], authMode: "login", pass2: "", notesOff: {}, door: "", netErr: "", dobInput: "", invite: "", pw: {}, pwh: {}, arrows: [], subs: [], foesOn: false, steps: [], stepI: 0, stepMode: false, playMs: null, sit: "", takerByPlan: {}, insAll: false, lichOpen: false, cardTall: false, akShow: false,
     teams: [], pending: null, joinCode: "", newTeam: "", nameInput: "", promoteId: "", evEditId: null, copied: "", lineupMsg: "", filter: "", q: "", sel: null, split: null, quickKey: "",
     // rankBy rong = chua ai chon cot; luc do `defaultRankBy` quyet dinh theo
     // du lieu that. De san "rating" o day thi ham do khong bao gio chay.
@@ -5103,6 +5103,17 @@ class Component extends DCLogic {
       goDoors: () => this.setState({ auth: null, sel: null, door: "pick", pending: null, loginErr: "" }),
       isAdmin, isPlayer: !!st.auth && !isAdmin,
       teamName: team.name, teamNameUpper: team.name.toUpperCase(), teamCode: team.code,
+      /* Hai cach bay CUNG MOT du lieu, khong phai hai the khac nhau: the doc de
+         khoe va gui vao nhom chat, the gon de quan ly. Dung chung markup, chi
+         doi thuoc tinh `data-tall` -- nuoi hai ban template la cach chac chan
+         de chung lech nhau sau ba thang.
+
+         Mo hinh so lieu von da giong FIFA san: tong diem, vi tri, sau chi so
+         2x3 (FACE6), va doi bo chi so cho thu mon. Cai thieu chi la HINH DANG. */
+      cardTall: !!st.cardTall,
+      cardTallAttr: st.cardTall ? "1" : "",
+      toggleCardTall: guard(() => this.setState(s2 => ({ cardTall: !s2.cardTall }))),
+      cardTallLabel: st.cardTall ? "Thẻ gọn" : "Thẻ dọc",
       teamLogo: team.logo || "",
       hasLogo: !!team.logo,
       noLogo: !team.logo,
